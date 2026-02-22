@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package helixrt;
+
+service RuntimeService {
+  rpc StartRuntime (StartRequest) returns (StatusResponse);
+  rpc StopRuntime (StopRequest) returns (StatusResponse);
+  rpc StreamMetrics (StreamRequest) returns (stream RuntimeMetrics);
+}
+
+message StartRequest {
+  string runtime_id = 1;
+  int32 thread_count = 2;
+}
+
+message StopRequest {
+  string runtime_id = 1;
+}
+
+message StreamRequest {
+  string runtime_id = 1;
+}
+
+message StatusResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+message RuntimeMetrics {
+  string runtime_id = 1;
+  int32 active_threads = 2;
+  double throughput = 3;
+  double latency = 4;
+  double cpu_usage = 5;
+  int64 timestamp = 6;
+}
