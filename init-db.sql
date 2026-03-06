@@ -1,4 +1,3 @@
-CREATE DATABASE helixrt;
 \c helixrt;
 
 CREATE TABLE IF NOT EXISTS metrics (

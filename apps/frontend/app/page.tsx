@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Header } from "@/components/ui/header-3";
+import { AnimatedCodeBlock } from "@/components/ui/animated-code";
 import { Logo } from "@/components/ui/logo";
 import { HeroSection04 } from "@/components/ui/hero-04";
 
@@ -48,6 +49,26 @@ export default function Home() {
                 Seamlessly hot-swap thread task-pulling policies over gRPC. Instantly convert a standard First-In First-Out (FIFO) queue into a high-throughput Round Robin Work Stealing architecture without restarting the engine.
               </p>
             </div>
+
+            <div>
+              <div className="w-12 h-12 rounded-xl bg-purple-900/30 flex items-center justify-center mb-6 shadow-inner border border-purple-500/10">
+                <svg className="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+              </div>
+              <h2 className="text-3xl font-bold mb-4 text-white font-serif tracking-tight">Real-Time Telemetry</h2>
+              <p className="text-lg text-slate-400 leading-relaxed font-serif">
+                Stream live queue depth, sub-millisecond thread latency, and system throughput straight to the web console via asynchronous WebSockets. Complete with PDF & JSON enterprise reporting.
+              </p>
+            </div>
+
+            <div>
+              <div className="w-12 h-12 rounded-xl bg-orange-900/30 flex items-center justify-center mb-6 shadow-inner border border-orange-500/10">
+                <svg className="w-6 h-6 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+              </div>
+              <h2 className="text-3xl font-bold mb-4 text-white font-serif tracking-tight">Full Scale Architecture</h2>
+              <p className="text-lg text-slate-400 leading-relaxed font-serif">
+                Microsecond precision implemented in raw C++ sockets. Easily orchestrate hundreds of millions of tasks across thousands of cores with completely unopinionated system bindings.
+              </p>
+            </div>
           </div>
 
           <div className="bg-[#111520] rounded-xl overflow-hidden shadow-2xl border border-slate-800/60 w-full transition-transform duration-500">
@@ -59,23 +80,7 @@ export default function Home() {
               </div>
               <div className="ml-4 text-xs font-mono text-slate-500 flex-1 text-center pr-10">runtime.cpp</div>
             </div>
-            <div className="p-8 text-sm font-mono leading-relaxed overflow-x-auto">
-              <pre className="text-slate-300">
-                <span className="text-pink-400">if</span> (queue_size {'>'} current_workers * <span className="text-blue-400">2</span>) {'{\n'}
-                {'  '}add_worker(); <span className="text-slate-500">// Scale up</span>{'\n'}
-                {'}'} <span className="text-pink-400">else if</span> (queue_size == <span className="text-blue-400">0</span>) {'{\n'}
-                {'  '}remove_worker(); <span className="text-slate-500">// Scale down</span>{'\n'}
-                {'}\n\n'}
-                <span className="text-pink-400">switch</span> (current_mode_) {'{\n'}
-                {'  '}<span className="text-pink-400">case</span> SchedulerMode::ROUND_ROBIN:{'\n'}
-                {'    '}task = steal_from_neighbors();{'\n'}
-                {'    '}<span className="text-pink-400">break</span>;{'\n'}
-                {'  '}<span className="text-pink-400">case</span> SchedulerMode::FIFO:{'\n'}
-                {'    '}task = own_queue.pop_front();{'\n'}
-                {'    '}<span className="text-pink-400">break</span>;{'\n'}
-                {'}'}
-              </pre>
-            </div>
+            <AnimatedCodeBlock />
           </div>
 
         </div>
