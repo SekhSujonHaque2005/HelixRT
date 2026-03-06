@@ -42,9 +42,11 @@ export default function Home() {
               Launch Telemetry Dashboard
             </button>
           </Link>
-          <button className="px-8 py-4 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 font-bold rounded-xl transition-all hover:bg-slate-50 dark:hover:bg-slate-800 text-lg">
-            Read Documentation
-          </button>
+          <Link href="/docs">
+            <button className="px-8 py-4 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 font-bold rounded-xl transition-all hover:bg-slate-50 dark:hover:bg-slate-800 text-lg">
+              Read Documentation
+            </button>
+          </Link>
         </div>
       </main>
 

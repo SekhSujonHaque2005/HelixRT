@@ -135,6 +135,77 @@ export default function DocsPage() {
                         </table>
                     </section>
 
+                    <hr className="my-12 border-slate-200 dark:border-slate-800" />
+
+                    {/* Section: Telemetry */}
+                    <section id="telemetry" className="scroll-mt-24 mb-16">
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">gRPC Telemetry Pipeline</h2>
+                        <p className="leading-relaxed mb-4 text-slate-700 dark:text-slate-300">
+                            HelixRT uses a highly optimized dual-channel communication bus. Control signals (like changing thread configurations or active schedulers) are sent downhill strictly via <strong>gRPC</strong>.
+                        </p>
+                        <p className="leading-relaxed mb-4 text-slate-700 dark:text-slate-300">
+                            Conversely, raw telemetry metrics (CPU load, queue depth per thread, active steals) are blasted uphill from the C++ client via a raw TCP connection to the Node.js Gateway. The Gateway aggregates these packets and broadcasts them over <strong>WebSockets</strong> to the Next.js Dashboard at up to 60 frames per second.
+                        </p>
+                        <div className="bg-slate-900 rounded-lg p-4 font-mono text-sm text-slate-300 mt-6">
+                            <code>
+                                <span className="text-emerald-400">message</span> <span className="text-blue-300">TelemetryPacket</span> {'{\n'}
+                                {'  '}<span className="text-pink-400">uint64</span> timestamp_ns = 1;{'\n'}
+                                {'  '}<span className="text-pink-400">map</span>&lt;<span className="text-pink-400">uint32</span>, ThreadMetrics&gt; threads = 2;{'\n'}
+                                {'  '}<span className="text-pink-400">double</span> global_cpu_load = 3;{'\n'}
+                                {'}'}
+                            </code>
+                        </div>
+                    </section>
+
+                    <hr className="my-12 border-slate-200 dark:border-slate-800" />
+
+                    {/* Section: Docker */}
+                    <section id="docker" className="scroll-mt-24 mb-16">
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Docker Compose Orchestration</h2>
+                        <p className="leading-relaxed mb-4 text-slate-700 dark:text-slate-300">
+                            For production environments and isolated research testing, HelixRT ships with a multi-container Docker setup. This completely abstracts away Node.js, Next.js, and PostgreSQL dependencies.
+                        </p>
+                        <p className="leading-relaxed mb-4 text-slate-700 dark:text-slate-300">
+                            The included <code>docker-compose.yml</code> provisions a dedicated bridge network ensuring minimal latency between the Gateway and the Postgres container.
+                        </p>
+                        <div className="bg-slate-900 rounded-lg p-4 font-mono text-sm text-slate-300">
+                            <Terminal size={16} className="text-emerald-500 shrink-0 inline mr-2" />
+                            <code>docker-compose up -d --build</code>
+                        </div>
+                    </section>
+
+                    {/* Section: Env Vars */}
+                    <section id="env-vars" className="scroll-mt-24 mb-16">
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Environment Variables</h2>
+                        <p className="leading-relaxed mb-4 text-slate-700 dark:text-slate-300">
+                            Several variables in the <code>.env</code> file control the scaling limits and connection ports of the infrastructure:
+                        </p>
+                        <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-lg">
+                            <table className="w-full text-left">
+                                <thead className="bg-slate-100 dark:bg-slate-900/50">
+                                    <tr>
+                                        <th className="py-3 px-4 font-semibold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800">Variable</th>
+                                        <th className="py-3 px-4 font-semibold text-slate-900 dark:text-white border-b border-slate-200 dark:border-slate-800">Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="text-sm">
+                                    <tr className="border-b border-slate-100 dark:border-slate-800/50">
+                                        <td className="py-3 px-4 font-mono text-emerald-600 dark:text-emerald-400">DATABASE_URL</td>
+                                        <td className="py-3 px-4 text-slate-600 dark:text-slate-400">The Postgres Prisma connection string for historical metric polling.</td>
+                                    </tr>
+                                    <tr className="border-b border-slate-100 dark:border-slate-800/50">
+                                        <td className="py-3 px-4 font-mono text-emerald-600 dark:text-emerald-400">NEXT_PUBLIC_GATEWAY_URL</td>
+                                        <td className="py-3 px-4 text-slate-600 dark:text-slate-400">The public-facing IP and HTTP port of your deployed Node.js Gateway.</td>
+                                    </tr>
+                                    <tr>
+                                        <td className="py-3 px-4 font-mono text-emerald-600 dark:text-emerald-400">MAX_WORKER_THREADS</td>
+                                        <td className="py-3 px-4 text-slate-600 dark:text-slate-400">Determines the absolute hardware ceiling the adaptive scheduler can scale the C++ runtime to.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
                 </main>
             </div>
         </div>
