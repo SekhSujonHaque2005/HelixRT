@@ -62,6 +62,21 @@ export default function Dashboard() {
 
             <h1>HelixRT Runtime Dashboard</h1>
 
+            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
+                <button
+                    style={{ padding: "10px 20px", cursor: "pointer", background: "#4CAF50", color: "white", border: "none", borderRadius: "5px", fontWeight: "bold" }}
+                    onClick={() => fetch("http://localhost:4000/runtime/start", { method: "POST" })}
+                >
+                    Start Runtime
+                </button>
+                <button
+                    style={{ padding: "10px 20px", cursor: "pointer", background: "#f44336", color: "white", border: "none", borderRadius: "5px", fontWeight: "bold" }}
+                    onClick={() => fetch("http://localhost:4000/runtime/stop", { method: "POST" })}
+                >
+                    Stop Runtime
+                </button>
+            </div>
+
             <h2>Throughput</h2>
             <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={data}>

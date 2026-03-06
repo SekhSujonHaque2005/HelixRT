@@ -12,9 +12,33 @@ using helixrt::RuntimeService;
 using helixrt::StreamRequest;
 using helixrt::RuntimeMetrics;
 
+using helixrt::StartRequest;
+using helixrt::StopRequest;
+using helixrt::StatusResponse;
+
 class RuntimeServiceImpl final : public RuntimeService::Service {
 
+    std::atomic<bool> is_running_{true};
+    std::atomic<int> current_threads_{4};
+
 public:
+
+Status StartRuntime(ServerContext* context, const StartRequest* request, StatusResponse* response) override {
+    std::cout << "Runtime started with thread count: " << request->thread_count() << std::endl;
+    current_threads_ = request->thread_count();
+    is_running_ = true;
+    response->set_success(true);
+    response->set_message("Runtime started successfully");
+    return Status::OK;
+}
+
+Status StopRuntime(ServerContext* context, const StopRequest* request, StatusResponse* response) override {
+    std::cout << "Runtime stopped" << std::endl;
+    is_running_ = false;
+    response->set_success(true);
+    response->set_message("Runtime stopped successfully");
+    return Status::OK;
+}
 
 Status StreamMetrics(
 ServerContext* context,
@@ -22,6 +46,11 @@ const StreamRequest* request,
 grpc::ServerWriter<RuntimeMetrics>* writer) override {
 
     while (true) {
+        
+        if (!is_running_.load()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(500));
+            continue;
+        }
 
         RuntimeMetrics metrics;
 

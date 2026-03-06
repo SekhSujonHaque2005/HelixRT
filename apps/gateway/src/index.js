@@ -7,7 +7,11 @@ import express from "express";
 import cors from "cors";
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "*",
+  methods: ["GET", "POST", "OPTIONS"]
+}));
+app.use(express.json());
 const PORT = 4000;
 
 const __filename = fileURLToPath(import.meta.url);
@@ -123,6 +127,31 @@ app.get("/metrics/history", async (req, res) => {
     console.error("History query error:", err);
     res.status(500).send("Database error");
   }
+});
+
+app.post("/runtime/start", (req, res) => {
+  runtimeClient.StartRuntime({
+    runtime_id: "runtime-1",
+    thread_count: 4
+  }, (err, response) => {
+    if (err) {
+      res.status(500).send(err);
+      return;
+    }
+    res.json(response);
+  });
+});
+
+app.post("/runtime/stop", (req, res) => {
+  runtimeClient.StopRuntime({
+    runtime_id: "runtime-1"
+  }, (err, response) => {
+    if (err) {
+      res.status(500).send(err);
+      return;
+    }
+    res.json(response);
+  });
 });
 
 app.listen(PORT, () => {
