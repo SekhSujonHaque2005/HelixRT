@@ -108,16 +108,44 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="w-full border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-black py-12 px-6">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-xl tracking-tight">HelixRT</span>
-            <span className="text-slate-500 dark:text-slate-600 text-sm ml-4">© 2026</span>
+      <footer className="w-full bg-slate-50 dark:bg-black pt-24 pb-8 px-6 border-t border-slate-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto w-full flex flex-col">
+          {/* Top section */}
+          <div className="flex flex-col lg:flex-row justify-between items-start gap-12 mb-24">
+            <h2 className="text-4xl md:text-5xl font-medium text-slate-900 dark:text-white tracking-tight">
+              Experience liftoff
+            </h2>
+            <div className="flex gap-16 md:gap-32">
+              <div className="flex flex-col gap-4 text-sm font-medium text-slate-900 dark:text-slate-300">
+                <Link href="/dashboard" className="hover:text-blue-600 dark:hover:text-blue-400">Telemetry Dashboard</Link>
+                <Link href="/docs" className="hover:text-blue-600 dark:hover:text-blue-400">Documentation</Link>
+                <Link href="/help-center" className="hover:text-blue-600 dark:hover:text-blue-400">Help Center</Link>
+                <Link href="https://github.com" target="_blank" className="hover:text-blue-600 dark:hover:text-blue-400">Source on GitHub</Link>
+              </div>
+              <div className="flex flex-col gap-4 text-sm font-medium text-slate-900 dark:text-slate-300">
+                <Link href="/about-us" className="hover:text-blue-600 dark:hover:text-blue-400">About Us</Link>
+                <Link href="/blog" className="hover:text-blue-600 dark:hover:text-blue-400">Engineering Blog</Link>
+              </div>
+            </div>
           </div>
-          <div className="flex gap-8 text-sm font-medium text-slate-600 dark:text-slate-400">
-            <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Documentation</a>
-            <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms of Service</a>
+
+          {/* Middle Gigantic Text */}
+          <div className="w-full flex justify-center items-center mb-20 overflow-hidden">
+            <h1 className="text-[18vw] xl:text-[200px] leading-none font-black tracking-tighter text-slate-900 dark:text-white text-center w-full">
+              HelixRT
+            </h1>
+          </div>
+
+          {/* Bottom Part */}
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-6 pt-8 border-t border-slate-200 dark:border-slate-800">
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-2xl tracking-tight text-slate-900 dark:text-white">HelixRT</span>
+            </div>
+            <div className="flex flex-wrap justify-center sm:justify-end gap-6 text-sm font-medium text-slate-600 dark:text-slate-400">
+              <Link href="/privacy-policy" className="hover:text-slate-900 dark:hover:text-white transition-colors">Privacy Policy</Link>
+              <Link href="/terms-of-service" className="hover:text-slate-900 dark:hover:text-white transition-colors">Terms of Service</Link>
+              <Link href="/refund-policy" className="hover:text-slate-900 dark:hover:text-white transition-colors">Refund Policy</Link>
+            </div>
           </div>
         </div>
       </footer>

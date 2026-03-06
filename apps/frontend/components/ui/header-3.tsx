@@ -60,16 +60,18 @@ export function Header() {
                         scrolled,
                 })}
             >
-                <nav className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-4">
-                    <div className="flex items-center gap-5">
-                        <Link href="/" className="flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md p-2 transition-colors">
+                <nav className="mx-auto flex h-14 w-full items-center justify-between px-6 lg:px-8">
+                    <div className="flex items-center flex-1">
+                        <Link href="/" className="flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md p-2 transition-colors w-fit">
                             <span className="flex h-3 w-3 relative">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-600"></span>
                             </span>
                             <span className="font-bold text-xl tracking-tight text-slate-900 dark:text-slate-50">HelixRT</span>
                         </Link>
-                        <NavigationMenu className="hidden md:flex">
+                    </div>
+                    <div className="hidden md:flex shrink-0">
+                        <NavigationMenu>
                             <NavigationMenuList>
                                 <NavigationMenuItem>
                                     <NavigationMenuTrigger className="bg-transparent">
@@ -98,7 +100,7 @@ export function Header() {
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
                                     <NavigationMenuTrigger className="bg-transparent">
-                                        Company
+                                        Resources
                                     </NavigationMenuTrigger>
                                     <NavigationMenuContent className="bg-white dark:bg-black p-1 pr-1.5 pb-1.5">
                                         <div className="grid w-[400px] grid-cols-2 gap-2">
@@ -148,7 +150,7 @@ export function Header() {
                             </NavigationMenuList>
                         </NavigationMenu>
                     </div>
-                    <div className="hidden items-center gap-2 md:flex">
+                    <div className="hidden items-center gap-4 md:flex flex-1 justify-end">
                         <ThemeToggle />
                         <Link href="/dashboard">
                             <Button>Launch Dashboard</Button>
@@ -176,7 +178,7 @@ export function Header() {
                             {productLinks.map((link) => (
                                 <ListItem key={link.title} {...link} />
                             ))}
-                            <span className="text-sm">Company</span>
+                            <span className="text-sm">Resources</span>
                             {companyLinks.map((link) => (
                                 <ListItem key={link.title} {...link} />
                             ))}
