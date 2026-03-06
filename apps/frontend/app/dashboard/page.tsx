@@ -128,10 +128,10 @@ export default function Dashboard() {
     const gatewayUrl = process.env.NEXT_PUBLIC_GATEWAY_URL || "http://localhost:4000";
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-200 font-serif relative overflow-hidden transition-colors duration-300">
+        <div className="min-h-screen bg-slate-50 dark:bg-black text-slate-900 dark:text-slate-200 font-serif relative overflow-hidden transition-colors duration-300">
 
             {/* Top Navigation Inline */}
-            <nav className="relative z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl">
+            <nav className="relative z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-black/80 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
                         <span className="flex h-3 w-3 relative">

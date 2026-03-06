@@ -2,7 +2,7 @@ import { Header } from "@/components/ui/header-3";
 
 export default function RefundPolicyPage() {
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 font-serif flex flex-col relative transition-colors duration-300">
+        <div className="min-h-screen bg-slate-50 dark:bg-black text-slate-900 dark:text-slate-50 font-serif flex flex-col relative transition-colors duration-300">
             <Header />
 
             <main className="flex-1 max-w-4xl mx-auto px-6 py-24 w-full">

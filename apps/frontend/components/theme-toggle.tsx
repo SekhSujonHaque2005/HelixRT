@@ -14,11 +14,11 @@ export function ThemeToggle() {
     }, []);
 
     if (!mounted) {
-        return <div className="w-[104px] h-[36px] rounded-full border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50" />;
+        return <div className="w-[104px] h-[36px] rounded-full border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-black/50" />;
     }
 
     return (
-        <div className="flex items-center gap-1 p-1 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 transition-colors">
+        <div className="flex items-center gap-1 p-1 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-black transition-colors">
             <button
                 onClick={() => setTheme("light")}
                 className={`p-1.5 rounded-full transition-all duration-200 ${theme === "light" ? "bg-slate-100 text-slate-900 shadow-sm" : "text-slate-400 hover:text-slate-900 dark:hover:text-slate-100"}`}
