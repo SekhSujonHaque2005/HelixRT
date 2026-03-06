@@ -144,10 +144,11 @@ grpc::ServerWriter<RuntimeMetrics>* writer) override {
         
         // Grab true metrics from the runtime
         int active = runtime_->get_running_tasks();
+        int pool_size = runtime_->get_pool_size();
         int queued = runtime_->get_queued_tasks();
         long long completed = runtime_->get_completed_tasks();
         
-        metrics.set_active_threads(active);
+        metrics.set_active_threads(pool_size);
         
         // Compute rough throughput (tasks per second over the last second)
         long long completed_delta = completed - last_completed;

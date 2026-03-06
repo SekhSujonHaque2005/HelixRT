@@ -1,16 +1,16 @@
 #include "runtime.hpp"
 #include <iostream>
 
-Runtime::Runtime(int thread_count)
-    : thread_count(thread_count),
+Runtime::Runtime(int start_threads)
+    : current_thread_count(start_threads),
       running(false),
       active_threads(0),
       total_tasks_executed(0),
       submit_index(0)
 {
-    task_queues.resize(thread_count);
+    task_queues.resize(max_threads);
 
-    for (int i = 0; i < thread_count; i++) {
+    for (int i = 0; i < max_threads; i++) {
         queue_mutexes.push_back(std::make_unique<std::mutex>());
     }
 }
@@ -20,16 +20,16 @@ void Runtime::start() {
     running = true;
     start_time = std::chrono::steady_clock::now();
 
-    for (int i = 0; i < thread_count; i++) {
+    for (int i = 0; i < current_thread_count.load(); i++) {
         workers.emplace_back(&Runtime::worker_loop, this, i);
     }
 
-    metrics_thread = std::thread(&Runtime::metrics_loop, this);
+    metrics_loop_thread = std::thread(&Runtime::metrics_loop, this);
 }
 
 void Runtime::submit(std::function<void()> task) {
 
-    int index = submit_index++ % thread_count;
+    int index = submit_index++ % max_threads;
 
     {
         std::lock_guard<std::mutex> lock(*queue_mutexes[index]);
@@ -39,7 +39,7 @@ void Runtime::submit(std::function<void()> task) {
 
 bool Runtime::steal_task(int thief_id, std::function<void()>& task) {
 
-    for (int i = 0; i < thread_count; i++) {
+    for (int i = 0; i < max_threads; i++) {
 
         if (i == thief_id)
             continue;
@@ -65,14 +65,18 @@ void Runtime::set_scheduler_mode(SchedulerMode mode) {
 void Runtime::worker_loop(int id) {
 
     while (running) {
+        if (id >= current_thread_count.load()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            continue;
+        }
 
         std::function<void()> task;
 
         if (current_mode_ == SchedulerMode::ROUND_ROBIN) {
             // For Round Robin, try to steal from everyone including self in a circle
-            int start_idx = (id + (total_tasks_executed.load() % thread_count)) % thread_count;
-            for (int i = 0; i < thread_count; i++) {
-                int target = (start_idx + i) % thread_count;
+            int start_idx = (id + (total_tasks_executed.load() % max_threads)) % max_threads;
+            for (int i = 0; i < max_threads; i++) {
+                int target = (start_idx + i) % max_threads;
                 std::lock_guard<std::mutex> lock(*queue_mutexes[target]);
                 if (!task_queues[target].empty()) {
                     task = std::move(task_queues[target].front());
@@ -119,11 +123,37 @@ void Runtime::worker_loop(int id) {
     }
 }
 
+void Runtime::add_worker() {
+    std::lock_guard<std::mutex> lck(workers_mutex);
+    int new_id = current_thread_count.load();
+    if (new_id < workers.size()) {
+       if (workers[new_id].joinable()) workers[new_id].join();
+       workers[new_id] = std::thread(&Runtime::worker_loop, this, new_id);
+    } else {
+       workers.emplace_back(&Runtime::worker_loop, this, new_id);
+    }
+    current_thread_count++;
+}
+
+void Runtime::remove_worker() {
+    std::lock_guard<std::mutex> lck(workers_mutex);
+    current_thread_count--;
+}
+
 void Runtime::metrics_loop() {
 
     while (running) {
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        int queue_size = get_queued_tasks();
+        int current_workers = current_thread_count.load();
+
+        if (queue_size > current_workers * 2 && current_workers < max_threads) {
+            add_worker();
+        } else if (queue_size == 0 && current_workers > min_threads) {
+            remove_worker();
+        }
 
         auto now = std::chrono::steady_clock::now();
 
@@ -133,7 +163,8 @@ void Runtime::metrics_loop() {
         double throughput = total_tasks_executed / elapsed;
 
         std::cout << "\n[METRICS]"
-                  << " Active Threads: " << active_threads.load()
+                  << " Pool Size: " << current_thread_count.load()
+                  << " | Active Threads: " << active_threads.load()
                   << " | Total Tasks: " << total_tasks_executed.load()
                   << " | Throughput: " << throughput
                   << " tasks/sec\n";
@@ -149,13 +180,13 @@ void Runtime::stop() {
             worker.join();
     }
 
-    if (metrics_thread.joinable())
-        metrics_thread.join();
+    if (metrics_loop_thread.joinable())
+        metrics_loop_thread.join();
 }
 
 int Runtime::get_queued_tasks() {
     int count = 0;
-    for (int i = 0; i < thread_count; i++) {
+    for (int i = 0; i < max_threads; i++) {
         std::lock_guard<std::mutex> lock(*queue_mutexes[i]);
         count += task_queues[i].size();
     }
@@ -168,4 +199,8 @@ int Runtime::get_running_tasks() const {
 
 long long Runtime::get_completed_tasks() const {
     return total_tasks_executed.load();
+}
+
+int Runtime::get_pool_size() const {
+    return current_thread_count.load();
 }

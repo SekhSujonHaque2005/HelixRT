@@ -11,7 +11,7 @@
 
 class Runtime {
 public:
-    Runtime(int thread_count);
+    Runtime(int start_threads = 2);
     void start();
     void stop();
     void submit(std::function<void()> task);
@@ -22,16 +22,22 @@ public:
     int get_queued_tasks();
     int get_running_tasks() const;
     long long get_completed_tasks() const;
+    int get_pool_size() const;
 
 private:
     void worker_loop(int id);
     bool steal_task(int thief_id, std::function<void()>& task);
     void metrics_loop();
+    void add_worker();
+    void remove_worker();
 
-    int thread_count;
+    int min_threads = 2;
+    int max_threads = 16;
+    std::atomic<int> current_thread_count;
 
     std::vector<std::thread> workers;
-    std::thread metrics_thread;
+    std::mutex workers_mutex;
+    std::thread metrics_loop_thread;
 
     std::atomic<bool> running;
 
