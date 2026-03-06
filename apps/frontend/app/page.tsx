@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Header } from "@/components/ui/header-3";
+import { Logo } from "@/components/ui/logo";
+import { HeroSection04 } from "@/components/ui/hero-04";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -20,35 +22,7 @@ export default function Home() {
       <Header />
 
       {/* Modern Hero Section */}
-      <main className="flex-1 flex flex-col items-center justify-center z-10 px-6 text-center py-32 relative">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-500/10 dark:bg-blue-600/20 rounded-full blur-[120px] pointer-events-none -mr-[20vw]" />
-
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-slate-800/50 border border-blue-200 dark:border-slate-700/50 mb-8 shadow-sm">
-          <span className="text-sm text-blue-700 dark:text-blue-300 font-medium">Platform v1.0 Framework Released</span>
-        </div>
-
-        <h1 className="text-6xl md:text-8xl font-black tracking-tighter mb-6 max-w-4xl leading-[1.1] text-slate-900 dark:text-white">
-          Built for Scale. <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500 dark:from-blue-400 dark:to-cyan-300">Engineered for Clarity.</span>
-        </h1>
-
-        <p className="max-w-2xl text-xl text-slate-600 dark:text-slate-400 mb-10 leading-relaxed font-serif">
-          HelixRT bridges the gap between high-performance C++ execution engines and modern web observability. Watch multi-modal scheduling and adaptive thread scaling in absolute real-time.
-        </p>
-
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          <Link href="/dashboard">
-            <button className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5 text-lg">
-              Launch Telemetry Dashboard
-            </button>
-          </Link>
-          <Link href="/docs">
-            <button className="px-8 py-4 bg-white dark:bg-slate-900 text-slate-900 dark:text-white border border-slate-200 dark:border-slate-800 font-bold rounded-xl transition-all hover:bg-slate-50 dark:hover:bg-slate-800 text-lg">
-              Read Documentation
-            </button>
-          </Link>
-        </div>
-      </main>
+      <HeroSection04 />
 
       {/* Feature Grid & Mock Code Block */}
       <section id="features" className="z-10 px-6 py-24 bg-white dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-800/50">
@@ -139,6 +113,7 @@ export default function Home() {
           {/* Bottom Part */}
           <div className="flex flex-col sm:flex-row justify-between items-center gap-6 pt-8 border-t border-slate-200 dark:border-slate-800">
             <div className="flex items-center gap-2">
+              <Logo className="w-6 h-6" />
               <span className="font-bold text-2xl tracking-tight text-slate-900 dark:text-white">HelixRT</span>
             </div>
             <div className="flex flex-wrap justify-center sm:justify-end gap-6 text-sm font-medium text-slate-600 dark:text-slate-400">

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MenuToggleIcon } from "@/components/ui/menu-toggle-icon";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Logo } from "@/components/ui/logo";
 import { createPortal } from "react-dom";
 import { useScroll } from "@/components/ui/use-scroll";
 import Link from "next/link";
@@ -63,10 +64,7 @@ export function Header() {
                 <nav className="mx-auto flex h-14 w-full items-center justify-between px-6 lg:px-8">
                     <div className="flex items-center flex-1">
                         <Link href="/" className="flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-md p-2 transition-colors w-fit">
-                            <span className="flex h-3 w-3 relative">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-600"></span>
-                            </span>
+                            <Logo className="w-6 h-6" />
                             <span className="font-bold text-xl tracking-tight text-slate-900 dark:text-slate-50">HelixRT</span>
                         </Link>
                     </div>

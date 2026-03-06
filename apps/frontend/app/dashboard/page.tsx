@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Logo } from "@/components/ui/logo";
 import {
     LineChart,
     Line,
@@ -134,10 +135,7 @@ export default function Dashboard() {
             <nav className="relative z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-black/80 backdrop-blur-xl">
                 <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-                        <span className="flex h-3 w-3 relative">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-600"></span>
-                        </span>
+                        <Logo className="w-6 h-6" />
                         <span className="font-bold text-xl tracking-tight">HelixRT</span>
                     </Link>
 
