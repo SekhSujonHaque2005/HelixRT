@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { Header } from "@/components/ui/header-3";
 
 export default function Home() {
   const [mounted, setMounted] = useState(false);
@@ -17,32 +17,7 @@ export default function Home() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 font-serif flex flex-col relative overflow-hidden transition-colors duration-300">
 
       {/* Top Navigation */}
-      <nav className="relative z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="flex h-3 w-3 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-blue-600"></span>
-            </span>
-            <span className="font-bold text-xl tracking-tight">HelixRT</span>
-          </div>
-
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600 dark:text-slate-300">
-            <a href="#features" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Features</a>
-            <a href="#architecture" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Architecture</a>
-            <a href="https://github.com" target="_blank" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">GitHub</a>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <ThemeToggle />
-            <Link href="/dashboard">
-              <button className="px-4 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-bold rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors">
-                Launch App
-              </button>
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <Header />
 
       {/* Modern Hero Section */}
       <main className="flex-1 flex flex-col items-center justify-center z-10 px-6 text-center py-32 relative">
