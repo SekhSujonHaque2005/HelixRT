@@ -83,12 +83,12 @@ export function Header() {
                                                 </li>
                                             ))}
                                         </ul>
-                                        <div className="p-2">
-                                            <p className="text-slate-500 dark:text-slate-400 text-sm">
+                                        <div className="p-3 bg-slate-50 dark:bg-[#0a0c10] border-t border-slate-200 dark:border-slate-800 rounded-b-md">
+                                            <p className="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1 font-serif">
                                                 View the Full Scale Architecture{" "}
                                                 <Link
-                                                    href="/#architecture"
-                                                    className="text-slate-900 dark:text-slate-100 font-medium hover:underline"
+                                                    href="/docs"
+                                                    className="text-slate-900 dark:text-white font-bold hover:underline"
                                                 >
                                                     Learn more
                                                 </Link>
