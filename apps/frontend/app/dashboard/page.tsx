@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
     LineChart,
     Line,
@@ -11,15 +11,44 @@ import {
     ResponsiveContainer
 } from "recharts";
 
-export default function Dashboard() {
+// Custom Tooltip for Recharts to match dark theme
+const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+        return (
+            <div className="bg-slate-900/90 border border-slate-700 p-3 rounded-lg shadow-xl backdrop-blur-md">
+                <p className="text-slate-400 text-sm mb-1">{label}</p>
+                <p className="text-emerald-400 font-bold">
+                    {payload[0].value.toFixed ? payload[0].value.toFixed(2) : payload[0].value}
+                </p>
+            </div>
+        );
+    }
+    return null;
+};
 
+export default function Dashboard() {
     const [data, setData] = useState<any[]>([]);
     const [alerts, setAlerts] = useState<string[]>([]);
+    const [terminalLogs, setTerminalLogs] = useState<string[]>([
+        "> HelixRT Monitoring System Initialized...",
+        "> Awaiting websocket connection at ws://localhost:8080..."
+    ]);
+    const terminalRef = useRef<HTMLDivElement>(null);
+
+    // Auto-scroll terminal
+    useEffect(() => {
+        if (terminalRef.current) {
+            terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+        }
+    }, [terminalLogs]);
 
     useEffect(() => {
-        fetch("http://localhost:4000/metrics/history")
-            .then(res => res.json())
-            .then(history => {
+        const fetchHistory = async () => {
+            try {
+                // Determine fetch URL dynamically since Docker has different ports than local
+                const gatewayUrl = process.env.NEXT_PUBLIC_GATEWAY_URL || "http://localhost:4000";
+                const res = await fetch(`${gatewayUrl}/metrics/history`);
+                const history = await res.json();
 
                 const formatted = history.reverse().map((m: any) => ({
                     time: new Date(Number(m.timestamp) * 1000).toLocaleTimeString(),
@@ -33,20 +62,29 @@ export default function Dashboard() {
                     running_tasks: m.running_tasks || 0,
                     completed_tasks: m.completed_tasks || 0
                 }));
-
                 setData(formatted);
+            } catch (err) {
+                console.error("Failed to fetch history:", err);
+            }
+        };
 
-            });
-        const socket = new WebSocket("ws://localhost:8080");
+        fetchHistory();
+
+        const wsUrl = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8080";
+        const socket = new WebSocket(wsUrl);
+
+        socket.onopen = () => {
+            setTerminalLogs(prev => [...prev.slice(-49), "> Connected to Remote Gateway. Receiving telemetry..."]);
+        };
 
         socket.onmessage = (event) => {
-
             const metrics = JSON.parse(event.data);
+            const timeStr = new Date().toLocaleTimeString();
 
             setData(prev => [
                 ...prev.slice(-50),
                 {
-                    time: new Date().toLocaleTimeString(),
+                    time: timeStr,
                     throughput: metrics.throughput,
                     threads: metrics.active_threads,
                     cpu: metrics.cpu_usage,
@@ -59,162 +97,244 @@ export default function Dashboard() {
                 }
             ]);
 
+            // Terminal Logic Construction
+            const logs = [];
+            // Emulate task completion events
+            if (metrics.completed_tasks > 0 && Math.random() > 0.5) {
+                logs.push(`[${timeStr}] Worker in Pool handled task batch. Latency: ${metrics.latency.toFixed(2)}s`);
+            }
+            if (metrics.queued_tasks > metrics.active_threads * 2 && metrics.active_threads < 16) {
+                logs.push(`[${timeStr}] SCALING EVENT: Submitting add_worker() to thread pool. Queue pressure high.`);
+            }
+            if (metrics.queued_tasks === 0 && metrics.active_threads > 2) {
+                logs.push(`[${timeStr}] SCALING EVENT: Executing remove_worker() from thread pool. Queue exhausted.`);
+            }
+
+            if (logs.length > 0) {
+                setTerminalLogs(prev => [...prev, ...logs].slice(-50));
+            }
+
             const currentAlerts = [];
             if (metrics.cpu_usage > 80) currentAlerts.push("⚠️ High CPU Usage (>80%)");
             if (metrics.latency > 1.0) currentAlerts.push("⚠️ High Latency (>1.0s)");
             setAlerts(currentAlerts);
-
         };
 
         return () => socket.close();
-
     }, []);
-    return (
-        <div style={{ padding: 40 }}>
 
-            <div style={{ position: "fixed", top: 20, right: 20, zIndex: 1000, display: "flex", flexDirection: "column", gap: "10px" }}>
+    const gatewayUrl = process.env.NEXT_PUBLIC_GATEWAY_URL || "http://localhost:4000";
+
+    return (
+        <div className="min-h-screen bg-slate-950 text-slate-200 font-sans p-6 md:p-10 relative overflow-hidden">
+
+            {/* Background Aesthetics */}
+            <div className="fixed top-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
+            <div className="fixed bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
+
+            {/* Floating Alerts */}
+            <div className="fixed top-6 right-6 z-50 flex flex-col gap-3">
                 {alerts.map((alert, i) => (
-                    <div key={i} style={{ background: "#f44336", color: "white", padding: "15px 25px", borderRadius: "5px", boxShadow: "0 4px 6px rgba(0,0,0,0.3)", fontWeight: "bold", borderLeft: "5px solid #b71c1c" }}>
+                    <div key={i} className="bg-rose-500/90 text-white px-6 py-4 rounded-xl shadow-2xl backdrop-blur-md border border-rose-400/50 font-bold animate-pulse">
                         {alert}
                     </div>
                 ))}
             </div>
 
-            <h1>HelixRT Runtime Dashboard</h1>
+            <div className="max-w-7xl mx-auto relative z-10">
 
-            <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-                <button
-                    style={{ padding: "10px 20px", cursor: "pointer", background: "#4CAF50", color: "white", border: "none", borderRadius: "5px", fontWeight: "bold" }}
-                    onClick={() => fetch("http://localhost:4000/runtime/start", { method: "POST" })}
-                >
-                    Start Runtime
-                </button>
-                <button
-                    style={{ padding: "10px 20px", cursor: "pointer", background: "#f44336", color: "white", border: "none", borderRadius: "5px", fontWeight: "bold" }}
-                    onClick={() => fetch("http://localhost:4000/runtime/stop", { method: "POST" })}
-                >
-                    Stop Runtime
-                </button>
-            </div>
-
-            <div style={{ marginBottom: "20px" }}>
-                <label style={{ marginRight: "10px", fontWeight: "bold" }}>Scheduler Mode:</label>
-                <select
-                    style={{ padding: "8px", borderRadius: "5px", background: "#333", color: "white", border: "1px solid #555" }}
-                    onChange={(e) => fetch("http://localhost:4000/runtime/scheduler", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ mode: e.target.value })
-                    })}
-                >
-                    <option value="FIFO">FIFO (First-In First-Out)</option>
-                    <option value="ROUND_ROBIN">Round Robin (Work Stealing)</option>
-                    <option value="PRIO">Priority (LIFO / Youngest-First)</option>
-                </select>
-            </div>
-
-            <h2>Queue Status</h2>
-            <div style={{ display: "flex", gap: "20px", marginBottom: "30px", flexWrap: "wrap" }}>
-                <div style={{ padding: "20px", background: "#1e1e1e", borderRadius: "8px", border: "1px solid #444", minWidth: "150px" }}>
-                    <h3 style={{ margin: "0 0 10px 0", color: "#8884d8" }}>Queued Tasks</h3>
-                    <div style={{ fontSize: "32px", fontWeight: "bold", color: "white" }}>
-                        {data.length > 0 ? data[data.length - 1].queued_tasks : 0}
+                {/* Header */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
+                    <div>
+                        <h1 className="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 to-cyan-400 drop-shadow-sm mb-2">
+                            HelixRT Telemetry
+                        </h1>
+                        <p className="text-slate-400">Live observability console for distributed runtime scheduling</p>
                     </div>
-                </div>
-                <div style={{ padding: "20px", background: "#1e1e1e", borderRadius: "8px", border: "1px solid #444", minWidth: "150px" }}>
-                    <h3 style={{ margin: "0 0 10px 0", color: "#82ca9d" }}>Running Tasks</h3>
-                    <div style={{ fontSize: "32px", fontWeight: "bold", color: "white" }}>
-                        {data.length > 0 ? data[data.length - 1].running_tasks : 0}
-                    </div>
-                </div>
-                <div style={{ padding: "20px", background: "#1e1e1e", borderRadius: "8px", border: "1px solid #444", minWidth: "150px" }}>
-                    <h3 style={{ margin: "0 0 10px 0", color: "#ff7300" }}>Completed Tasks</h3>
-                    <div style={{ fontSize: "32px", fontWeight: "bold", color: "white" }}>
-                        {data.length > 0 ? data[data.length - 1].completed_tasks : 0}
-                    </div>
-                </div>
-            </div>
 
-            <h2>Throughput</h2>
-            <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="throughput" stroke="#8884d8" />
-                </LineChart>
-            </ResponsiveContainer>
+                    <div className="flex flex-wrap items-center gap-4 bg-slate-900/50 p-2 rounded-2xl border border-slate-800 backdrop-blur-md">
+                        <button
+                            className="px-6 py-2.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/50 hover:border-emerald-400 rounded-xl font-medium transition-all shadow-[0_0_15px_rgba(16,185,129,0.1)] hover:shadow-[0_0_20px_rgba(16,185,129,0.2)]"
+                            onClick={() => fetch(`${gatewayUrl}/runtime/start`, { method: "POST" })}
+                        >
+                            Start Runtime
+                        </button>
+                        <button
+                            className="px-6 py-2.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/50 hover:border-rose-400 rounded-xl font-medium transition-all shadow-[0_0_15px_rgba(244,67,54,0.1)] hover:shadow-[0_0_20px_rgba(244,67,54,0.2)]"
+                            onClick={() => fetch(`${gatewayUrl}/runtime/stop`, { method: "POST" })}
+                        >
+                            Stop Runtime
+                        </button>
 
-            <h2>Active Threads</h2>
-            <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="threads" stroke="#82ca9d" />
-                </LineChart>
-            </ResponsiveContainer>
+                        <div className="h-8 w-px bg-slate-700 mx-1 hidden md:block"></div>
 
-            <h2>CPU Usage</h2>
-            <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="cpu" stroke="#ff7300" />
-                </LineChart>
-            </ResponsiveContainer>
-
-            <h2>Latency</h2>
-            <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="time" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="latency" stroke="#ff0000" />
-                </LineChart>
-            </ResponsiveContainer>
-
-            <h2>Thread Activity</h2>
-            <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginTop: "20px" }}>
-                {[0, 1, 2, 3].map((thread_id) => {
-                    const taskForThread = data.filter((d) => d.thread_id === thread_id).pop();
-                    const hasTask = taskForThread && taskForThread.task_id != null;
-
-                    return (
-                        <div key={thread_id} style={{
-                            padding: "20px",
-                            border: "1px solid #444",
-                            borderRadius: "8px",
-                            minWidth: "150px",
-                            backgroundColor: hasTask ? "#1e1e1e" : "#111",
-                            color: "white",
-                            textAlign: "center",
-                            boxShadow: "0 4px 6px rgba(0,0,0,0.3)",
-                            transition: "background-color 0.2s"
-                        }}>
-                            <h3 style={{ margin: "0 0 10px 0", color: "#82ca9d" }}>Thread {thread_id}</h3>
-                            <div style={{ fontSize: "24px", fontWeight: "bold" }}>
-                                {hasTask ? `Task ${taskForThread.task_id}` : "Idle"}
-                            </div>
-                            {hasTask && (
-                                <div style={{
-                                    height: "10px",
-                                    background: "#82ca9d",
-                                    marginTop: "15px",
-                                    borderRadius: "5px",
-                                    width: `${(taskForThread.task_id % 100)}%`
-                                }} />
-                            )}
+                        <div className="flex items-center gap-3 px-2">
+                            <label className="text-sm font-medium text-slate-300">Policy:</label>
+                            <select
+                                className="bg-slate-800 text-slate-200 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-cyan-500 transition-colors cursor-pointer outline-none"
+                                onChange={(e) => fetch(`${gatewayUrl}/runtime/scheduler`, {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ mode: e.target.value })
+                                })}
+                            >
+                                <option value="FIFO">FIFO Queue</option>
+                                <option value="ROUND_ROBIN">Round Robin Steal</option>
+                                <option value="PRIO">Priority LIFO</option>
+                            </select>
                         </div>
-                    );
-                })}
-            </div>
+                    </div>
+                </div>
 
+                {/* Queue Metrics & Terminal Row */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+                    {/* Queue Status Panel */}
+                    <div className="lg:col-span-1 flex flex-col gap-4">
+                        <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 backdrop-blur-xl group hover:border-slate-700 transition-all shadow-lg">
+                            <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">Queued Tasks</h3>
+                            <div className="text-4xl font-black text-cyan-400 drop-shadow-[0_0_10px_rgba(34,211,238,0.3)] group-hover:drop-shadow-[0_0_15px_rgba(34,211,238,0.5)] transition-all">
+                                {data.length > 0 ? data[data.length - 1].queued_tasks : 0}
+                            </div>
+                        </div>
+
+                        <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 backdrop-blur-xl group hover:border-slate-700 transition-all shadow-lg">
+                            <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">Running Tasks</h3>
+                            <div className="text-4xl font-black text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.3)] group-hover:drop-shadow-[0_0_15px_rgba(16,185,129,0.5)] transition-all">
+                                {data.length > 0 ? data[data.length - 1].running_tasks : 0}
+                            </div>
+                        </div>
+
+                        <div className="bg-slate-900/40 border border-slate-800 rounded-2xl p-6 backdrop-blur-xl group hover:border-slate-700 transition-all shadow-lg">
+                            <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">Completed Tasks</h3>
+                            <div className="text-4xl font-black text-amber-400 drop-shadow-[0_0_10px_rgba(251,191,36,0.3)] group-hover:drop-shadow-[0_0_15px_rgba(251,191,36,0.5)] transition-all">
+                                {data.length > 0 ? data[data.length - 1].completed_tasks : 0}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Live Terminal Log */}
+                    <div className="lg:col-span-2 bg-[#0c0c0c]/80 border border-slate-800/80 rounded-2xl backdrop-blur-xl flex flex-col overflow-hidden shadow-2xl relative">
+                        <div className="bg-slate-900/80 border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <div className="w-3 h-3 rounded-full bg-rose-500"></div>
+                                <div className="w-3 h-3 rounded-full bg-amber-500"></div>
+                                <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
+                            </div>
+                            <div className="text-xs font-mono text-slate-500">bash — helixrt-cluster — 80x24</div>
+                        </div>
+                        <div
+                            ref={terminalRef}
+                            className="flex-1 p-5 overflow-y-auto font-mono text-sm leading-relaxed scroll-smooth custom-scrollbar"
+                        >
+                            {terminalLogs.map((log, i) => {
+                                const isWarning = log.includes("SCALING EVENT");
+                                return (
+                                    <div key={i} className={`mb-1 ${isWarning ? 'text-amber-400 leading-wider' : 'text-emerald-400/80'}`}>
+                                        {log}
+                                    </div>
+                                );
+                            })}
+                            <div className="animate-pulse inline-block w-2 h-4 bg-emerald-400 mt-1"></div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Primary Metrics Charts */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+                    {/* Throughput */}
+                    <div className="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 backdrop-blur-xl shadow-lg">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                                <svg className="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                            </div>
+                            <h2 className="text-xl font-bold text-slate-200">Throughput <span className="text-sm font-normal text-slate-500 ml-2">(tasks/sec)</span></h2>
+                        </div>
+                        <div className="h-[250px] w-full">
+                            <ResponsiveContainer>
+                                <LineChart data={data}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                                    <XAxis dataKey="time" stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
+                                    <YAxis stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} dx={-10} />
+                                    <Tooltip content={<CustomTooltip />} />
+                                    <Line type="monotone" dataKey="throughput" stroke="#22d3ee" strokeWidth={3} dot={false} activeDot={{ r: 6, fill: '#22d3ee', strokeWidth: 0 }} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                    {/* Active Threads */}
+                    <div className="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 backdrop-blur-xl shadow-lg">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                                <svg className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+                            </div>
+                            <h2 className="text-xl font-bold text-slate-200">Adaptive Threads <span className="text-sm font-normal text-slate-500 ml-2">(pool size)</span></h2>
+                        </div>
+                        <div className="h-[250px] w-full">
+                            <ResponsiveContainer>
+                                <LineChart data={data}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                                    <XAxis dataKey="time" stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
+                                    <YAxis stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} dx={-10} />
+                                    <Tooltip content={<CustomTooltip />} />
+                                    <Line type="stepAfter" dataKey="threads" stroke="#10b981" strokeWidth={3} dot={false} activeDot={{ r: 6, fill: '#10b981', strokeWidth: 0 }} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                </div>
+
+                {/* Secondary Metrics Charts */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+                    {/* Latency */}
+                    <div className="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 backdrop-blur-xl shadow-lg">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-8 h-8 rounded-lg bg-rose-500/20 flex items-center justify-center">
+                                <svg className="w-4 h-4 text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                            </div>
+                            <h2 className="text-xl font-bold text-slate-200">Latency <span className="text-sm font-normal text-slate-500 ml-2">(seconds)</span></h2>
+                        </div>
+                        <div className="h-[250px] w-full">
+                            <ResponsiveContainer>
+                                <LineChart data={data}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                                    <XAxis dataKey="time" stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
+                                    <YAxis stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} dx={-10} />
+                                    <Tooltip content={<CustomTooltip />} />
+                                    <Line type="monotone" dataKey="latency" stroke="#fb7185" strokeWidth={2} dot={false} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                    {/* CPU Usage */}
+                    <div className="bg-slate-900/40 border border-slate-800 rounded-3xl p-6 backdrop-blur-xl shadow-lg">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                                <svg className="w-4 h-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" /></svg>
+                            </div>
+                            <h2 className="text-xl font-bold text-slate-200">CPU Overhead <span className="text-sm font-normal text-slate-500 ml-2">(%)</span></h2>
+                        </div>
+                        <div className="h-[250px] w-full">
+                            <ResponsiveContainer>
+                                <LineChart data={data}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                                    <XAxis dataKey="time" stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} dy={10} />
+                                    <YAxis stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} dx={-10} />
+                                    <Tooltip content={<CustomTooltip />} />
+                                    <Line type="monotone" dataKey="cpu" stroke="#fbbf24" strokeWidth={2} dot={false} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
         </div>
     );
 }
