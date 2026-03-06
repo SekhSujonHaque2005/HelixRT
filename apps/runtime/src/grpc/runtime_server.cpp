@@ -32,6 +32,9 @@ grpc::ServerWriter<RuntimeMetrics>* writer) override {
         metrics.set_cpu_usage(10 + rand() % 70);
         metrics.set_timestamp(time(nullptr));
 
+        metrics.set_thread_id(rand() % 4);
+        metrics.set_task_id(rand() % 100);
+
         writer->Write(metrics);
 
         std::this_thread::sleep_for(std::chrono::seconds(1));

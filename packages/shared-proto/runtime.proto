@@ -33,4 +33,7 @@ message RuntimeMetrics {
   double latency = 4;
   double cpu_usage = 5;
   int64 timestamp = 6;
+
+  int32 thread_id = 7;
+  int32 task_id = 8;
 }

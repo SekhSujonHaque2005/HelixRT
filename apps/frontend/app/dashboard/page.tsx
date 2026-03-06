@@ -16,43 +16,47 @@ export default function Dashboard() {
     const [data, setData] = useState<any[]>([]);
 
     useEffect(() => {
-  fetch("http://localhost:4000/metrics/history")
-    .then(res => res.json())
-    .then(history => {
+        fetch("http://localhost:4000/metrics/history")
+            .then(res => res.json())
+            .then(history => {
 
-      const formatted = history.reverse().map((m: { timestamp: any; throughput: any; active_threads: any; cpu_usage: any; latency: any; }) => ({
-        time: new Date(Number(m.timestamp) * 1000).toLocaleTimeString(),
-        throughput: m.throughput,
-        threads: m.active_threads,
-        cpu: m.cpu_usage,
-        latency: m.latency
-      }));
+                const formatted = history.reverse().map((m: any) => ({
+                    time: new Date(Number(m.timestamp) * 1000).toLocaleTimeString(),
+                    throughput: m.throughput,
+                    threads: m.active_threads,
+                    cpu: m.cpu_usage,
+                    latency: m.latency,
+                    thread_id: m.thread_id,
+                    task_id: m.task_id
+                }));
 
-      setData(formatted);
+                setData(formatted);
 
-    });
-  const socket = new WebSocket("ws://localhost:8080");
+            });
+        const socket = new WebSocket("ws://localhost:8080");
 
-  socket.onmessage = (event) => {
+        socket.onmessage = (event) => {
 
-    const metrics = JSON.parse(event.data);
+            const metrics = JSON.parse(event.data);
 
-    setData(prev => [
-      ...prev.slice(-50),
-      {
-        time: new Date().toLocaleTimeString(),
-        throughput: metrics.throughput,
-        threads: metrics.active_threads,
-        cpu: metrics.cpu_usage,
-        latency: metrics.latency
-      }
-    ]);
+            setData(prev => [
+                ...prev.slice(-50),
+                {
+                    time: new Date().toLocaleTimeString(),
+                    throughput: metrics.throughput,
+                    threads: metrics.active_threads,
+                    cpu: metrics.cpu_usage,
+                    latency: metrics.latency,
+                    thread_id: metrics.thread_id,
+                    task_id: metrics.task_id
+                }
+            ]);
 
-  };
+        };
 
-  return () => socket.close();
+        return () => socket.close();
 
-}, []);
+    }, []);
     return (
         <div style={{ padding: 40 }}>
 
@@ -101,6 +105,42 @@ export default function Dashboard() {
                     <Line type="monotone" dataKey="latency" stroke="#ff0000" />
                 </LineChart>
             </ResponsiveContainer>
+
+            <h2>Thread Activity</h2>
+            <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginTop: "20px" }}>
+                {[0, 1, 2, 3].map((thread_id) => {
+                    const taskForThread = data.filter((d) => d.thread_id === thread_id).pop();
+                    const hasTask = taskForThread && taskForThread.task_id != null;
+
+                    return (
+                        <div key={thread_id} style={{
+                            padding: "20px",
+                            border: "1px solid #444",
+                            borderRadius: "8px",
+                            minWidth: "150px",
+                            backgroundColor: hasTask ? "#1e1e1e" : "#111",
+                            color: "white",
+                            textAlign: "center",
+                            boxShadow: "0 4px 6px rgba(0,0,0,0.3)",
+                            transition: "background-color 0.2s"
+                        }}>
+                            <h3 style={{ margin: "0 0 10px 0", color: "#82ca9d" }}>Thread {thread_id}</h3>
+                            <div style={{ fontSize: "24px", fontWeight: "bold" }}>
+                                {hasTask ? `Task ${taskForThread.task_id}` : "Idle"}
+                            </div>
+                            {hasTask && (
+                                <div style={{
+                                    height: "10px",
+                                    background: "#82ca9d",
+                                    marginTop: "15px",
+                                    borderRadius: "5px",
+                                    width: `${(taskForThread.task_id % 100)}%`
+                                }} />
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
 
         </div>
     );

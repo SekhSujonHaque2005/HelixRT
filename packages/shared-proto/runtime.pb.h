@@ -832,9 +832,11 @@ class RuntimeMetrics PROTOBUF_FINAL :
     kRuntimeIdFieldNumber = 1,
     kThroughputFieldNumber = 3,
     kLatencyFieldNumber = 4,
+    kActiveThreadsFieldNumber = 2,
+    kThreadIdFieldNumber = 7,
     kCpuUsageFieldNumber = 5,
     kTimestampFieldNumber = 6,
-    kActiveThreadsFieldNumber = 2,
+    kTaskIdFieldNumber = 8,
   };
   // string runtime_id = 1;
   void clear_runtime_id();
@@ -879,6 +881,24 @@ class RuntimeMetrics PROTOBUF_FINAL :
   void _internal_set_latency(double value);
   public:
 
+  // int32 active_threads = 2;
+  void clear_active_threads();
+  ::PROTOBUF_NAMESPACE_ID::int32 active_threads() const;
+  void set_active_threads(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_active_threads() const;
+  void _internal_set_active_threads(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // int32 thread_id = 7;
+  void clear_thread_id();
+  ::PROTOBUF_NAMESPACE_ID::int32 thread_id() const;
+  void set_thread_id(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_thread_id() const;
+  void _internal_set_thread_id(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
   // double cpu_usage = 5;
   void clear_cpu_usage();
   double cpu_usage() const;
@@ -897,13 +917,13 @@ class RuntimeMetrics PROTOBUF_FINAL :
   void _internal_set_timestamp(::PROTOBUF_NAMESPACE_ID::int64 value);
   public:
 
-  // int32 active_threads = 2;
-  void clear_active_threads();
-  ::PROTOBUF_NAMESPACE_ID::int32 active_threads() const;
-  void set_active_threads(::PROTOBUF_NAMESPACE_ID::int32 value);
+  // int32 task_id = 8;
+  void clear_task_id();
+  ::PROTOBUF_NAMESPACE_ID::int32 task_id() const;
+  void set_task_id(::PROTOBUF_NAMESPACE_ID::int32 value);
   private:
-  ::PROTOBUF_NAMESPACE_ID::int32 _internal_active_threads() const;
-  void _internal_set_active_threads(::PROTOBUF_NAMESPACE_ID::int32 value);
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_task_id() const;
+  void _internal_set_task_id(::PROTOBUF_NAMESPACE_ID::int32 value);
   public:
 
   // @@protoc_insertion_point(class_scope:helixrt.RuntimeMetrics)
@@ -916,9 +936,11 @@ class RuntimeMetrics PROTOBUF_FINAL :
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr runtime_id_;
   double throughput_;
   double latency_;
+  ::PROTOBUF_NAMESPACE_ID::int32 active_threads_;
+  ::PROTOBUF_NAMESPACE_ID::int32 thread_id_;
   double cpu_usage_;
   ::PROTOBUF_NAMESPACE_ID::int64 timestamp_;
-  ::PROTOBUF_NAMESPACE_ID::int32 active_threads_;
+  ::PROTOBUF_NAMESPACE_ID::int32 task_id_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_runtime_2eproto;
 };
@@ -1492,6 +1514,46 @@ inline void RuntimeMetrics::_internal_set_timestamp(::PROTOBUF_NAMESPACE_ID::int
 inline void RuntimeMetrics::set_timestamp(::PROTOBUF_NAMESPACE_ID::int64 value) {
   _internal_set_timestamp(value);
   // @@protoc_insertion_point(field_set:helixrt.RuntimeMetrics.timestamp)
+}
+
+// int32 thread_id = 7;
+inline void RuntimeMetrics::clear_thread_id() {
+  thread_id_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 RuntimeMetrics::_internal_thread_id() const {
+  return thread_id_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 RuntimeMetrics::thread_id() const {
+  // @@protoc_insertion_point(field_get:helixrt.RuntimeMetrics.thread_id)
+  return _internal_thread_id();
+}
+inline void RuntimeMetrics::_internal_set_thread_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  thread_id_ = value;
+}
+inline void RuntimeMetrics::set_thread_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_thread_id(value);
+  // @@protoc_insertion_point(field_set:helixrt.RuntimeMetrics.thread_id)
+}
+
+// int32 task_id = 8;
+inline void RuntimeMetrics::clear_task_id() {
+  task_id_ = 0;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 RuntimeMetrics::_internal_task_id() const {
+  return task_id_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 RuntimeMetrics::task_id() const {
+  // @@protoc_insertion_point(field_get:helixrt.RuntimeMetrics.task_id)
+  return _internal_task_id();
+}
+inline void RuntimeMetrics::_internal_set_task_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  
+  task_id_ = value;
+}
+inline void RuntimeMetrics::set_task_id(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_task_id(value);
+  // @@protoc_insertion_point(field_set:helixrt.RuntimeMetrics.task_id)
 }
 
 #ifdef __GNUC__

@@ -76,7 +76,11 @@ stream.on("data", async (metrics) => {
   // send metrics to dashboard
   wss.clients.forEach((client) => {
     if (client.readyState === 1) {
-      client.send(JSON.stringify(metrics));
+      client.send(JSON.stringify({
+        ...metrics,
+        thread_id: metrics.thread_id,
+        task_id: metrics.task_id
+      }));
     }
   });
 

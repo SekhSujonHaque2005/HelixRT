@@ -148,6 +148,8 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_runtime_2eproto::offsets[] PRO
   PROTOBUF_FIELD_OFFSET(::helixrt::RuntimeMetrics, latency_),
   PROTOBUF_FIELD_OFFSET(::helixrt::RuntimeMetrics, cpu_usage_),
   PROTOBUF_FIELD_OFFSET(::helixrt::RuntimeMetrics, timestamp_),
+  PROTOBUF_FIELD_OFFSET(::helixrt::RuntimeMetrics, thread_id_),
+  PROTOBUF_FIELD_OFFSET(::helixrt::RuntimeMetrics, task_id_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::helixrt::StartRequest)},
@@ -171,16 +173,17 @@ const char descriptor_table_protodef_runtime_2eproto[] PROTOBUF_SECTION_VARIABLE
   "(\005\"!\n\013StopRequest\022\022\n\nruntime_id\030\001 \001(\t\"#\n"
   "\rStreamRequest\022\022\n\nruntime_id\030\001 \001(\t\"2\n\016St"
   "atusResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message"
-  "\030\002 \001(\t\"\207\001\n\016RuntimeMetrics\022\022\n\nruntime_id\030"
+  "\030\002 \001(\t\"\253\001\n\016RuntimeMetrics\022\022\n\nruntime_id\030"
   "\001 \001(\t\022\026\n\016active_threads\030\002 \001(\005\022\022\n\nthrough"
   "put\030\003 \001(\001\022\017\n\007latency\030\004 \001(\001\022\021\n\tcpu_usage\030"
-  "\005 \001(\001\022\021\n\ttimestamp\030\006 \001(\0032\322\001\n\016RuntimeServ"
-  "ice\022>\n\014StartRuntime\022\025.helixrt.StartReque"
-  "st\032\027.helixrt.StatusResponse\022<\n\013StopRunti"
-  "me\022\024.helixrt.StopRequest\032\027.helixrt.Statu"
-  "sResponse\022B\n\rStreamMetrics\022\026.helixrt.Str"
-  "eamRequest\032\027.helixrt.RuntimeMetrics0\001b\006p"
-  "roto3"
+  "\005 \001(\001\022\021\n\ttimestamp\030\006 \001(\003\022\021\n\tthread_id\030\007 "
+  "\001(\005\022\017\n\007task_id\030\010 \001(\0052\322\001\n\016RuntimeService\022"
+  ">\n\014StartRuntime\022\025.helixrt.StartRequest\032\027"
+  ".helixrt.StatusResponse\022<\n\013StopRuntime\022\024"
+  ".helixrt.StopRequest\032\027.helixrt.StatusRes"
+  "ponse\022B\n\rStreamMetrics\022\026.helixrt.StreamR"
+  "equest\032\027.helixrt.RuntimeMetrics0\001b\006proto"
+  "3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_runtime_2eproto_deps[1] = {
 };
@@ -193,7 +196,7 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_run
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_runtime_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_runtime_2eproto = {
-  false, false, descriptor_table_protodef_runtime_2eproto, "runtime.proto", 565,
+  false, false, descriptor_table_protodef_runtime_2eproto, "runtime.proto", 601,
   &descriptor_table_runtime_2eproto_once, descriptor_table_runtime_2eproto_sccs, descriptor_table_runtime_2eproto_deps, 5, 0,
   schemas, file_default_instances, TableStruct_runtime_2eproto::offsets,
   file_level_metadata_runtime_2eproto, 5, file_level_enum_descriptors_runtime_2eproto, file_level_service_descriptors_runtime_2eproto,
@@ -1114,8 +1117,8 @@ RuntimeMetrics::RuntimeMetrics(const RuntimeMetrics& from)
       GetArena());
   }
   ::memcpy(&throughput_, &from.throughput_,
-    static_cast<size_t>(reinterpret_cast<char*>(&active_threads_) -
-    reinterpret_cast<char*>(&throughput_)) + sizeof(active_threads_));
+    static_cast<size_t>(reinterpret_cast<char*>(&task_id_) -
+    reinterpret_cast<char*>(&throughput_)) + sizeof(task_id_));
   // @@protoc_insertion_point(copy_constructor:helixrt.RuntimeMetrics)
 }
 
@@ -1123,8 +1126,8 @@ void RuntimeMetrics::SharedCtor() {
   ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_RuntimeMetrics_runtime_2eproto.base);
   runtime_id_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   ::memset(&throughput_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&active_threads_) -
-      reinterpret_cast<char*>(&throughput_)) + sizeof(active_threads_));
+      reinterpret_cast<char*>(&task_id_) -
+      reinterpret_cast<char*>(&throughput_)) + sizeof(task_id_));
 }
 
 RuntimeMetrics::~RuntimeMetrics() {
@@ -1161,8 +1164,8 @@ void RuntimeMetrics::Clear() {
 
   runtime_id_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   ::memset(&throughput_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&active_threads_) -
-      reinterpret_cast<char*>(&throughput_)) + sizeof(active_threads_));
+      reinterpret_cast<char*>(&task_id_) -
+      reinterpret_cast<char*>(&throughput_)) + sizeof(task_id_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1215,6 +1218,20 @@ const char* RuntimeMetrics::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE
       case 6:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
           timestamp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 thread_id = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 56)) {
+          thread_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 task_id = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 64)) {
+          task_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -1286,6 +1303,18 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt64ToArray(6, this->_internal_timestamp(), target);
   }
 
+  // int32 thread_id = 7;
+  if (this->thread_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(7, this->_internal_thread_id(), target);
+  }
+
+  // int32 task_id = 8;
+  if (this->task_id() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(8, this->_internal_task_id(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1319,6 +1348,20 @@ size_t RuntimeMetrics::ByteSizeLong() const {
     total_size += 1 + 8;
   }
 
+  // int32 active_threads = 2;
+  if (this->active_threads() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_active_threads());
+  }
+
+  // int32 thread_id = 7;
+  if (this->thread_id() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_thread_id());
+  }
+
   // double cpu_usage = 5;
   if (!(this->cpu_usage() <= 0 && this->cpu_usage() >= 0)) {
     total_size += 1 + 8;
@@ -1331,11 +1374,11 @@ size_t RuntimeMetrics::ByteSizeLong() const {
         this->_internal_timestamp());
   }
 
-  // int32 active_threads = 2;
-  if (this->active_threads() != 0) {
+  // int32 task_id = 8;
+  if (this->task_id() != 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
-        this->_internal_active_threads());
+        this->_internal_task_id());
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
@@ -1378,14 +1421,20 @@ void RuntimeMetrics::MergeFrom(const RuntimeMetrics& from) {
   if (!(from.latency() <= 0 && from.latency() >= 0)) {
     _internal_set_latency(from._internal_latency());
   }
+  if (from.active_threads() != 0) {
+    _internal_set_active_threads(from._internal_active_threads());
+  }
+  if (from.thread_id() != 0) {
+    _internal_set_thread_id(from._internal_thread_id());
+  }
   if (!(from.cpu_usage() <= 0 && from.cpu_usage() >= 0)) {
     _internal_set_cpu_usage(from._internal_cpu_usage());
   }
   if (from.timestamp() != 0) {
     _internal_set_timestamp(from._internal_timestamp());
   }
-  if (from.active_threads() != 0) {
-    _internal_set_active_threads(from._internal_active_threads());
+  if (from.task_id() != 0) {
+    _internal_set_task_id(from._internal_task_id());
   }
 }
 
@@ -1412,8 +1461,8 @@ void RuntimeMetrics::InternalSwap(RuntimeMetrics* other) {
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   runtime_id_.Swap(&other->runtime_id_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(RuntimeMetrics, active_threads_)
-      + sizeof(RuntimeMetrics::active_threads_)
+      PROTOBUF_FIELD_OFFSET(RuntimeMetrics, task_id_)
+      + sizeof(RuntimeMetrics::task_id_)
       - PROTOBUF_FIELD_OFFSET(RuntimeMetrics, throughput_)>(
           reinterpret_cast<char*>(&throughput_),
           reinterpret_cast<char*>(&other->throughput_));
