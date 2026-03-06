@@ -27,7 +27,7 @@ import { Client } from "pg";
 
 const db = new Client({
   user: "postgres",
-  host: "localhost",
+  host: process.env.PGHOST || "localhost",
   database: "helixrt",
   password: "postgres",
   port: 5432
@@ -53,7 +53,7 @@ const helixrt = protoDescriptor.helixrt;
 /* ---------- gRPC Client ---------- */
 
 const runtimeClient = new helixrt.RuntimeService(
-  "localhost:50051",
+  process.env.GRPC_HOST || "localhost:50051",
   grpc.credentials.createInsecure()
 );
 
@@ -83,22 +83,28 @@ stream.on("data", async (metrics) => {
       client.send(JSON.stringify({
         ...metrics,
         thread_id: metrics.thread_id,
-        task_id: metrics.task_id
+        task_id: metrics.task_id,
+        queued_tasks: metrics.queued_tasks,
+        running_tasks: metrics.running_tasks,
+        completed_tasks: metrics.completed_tasks
       }));
     }
   });
 
   try {
     await db.query(
-      `INSERT INTO metrics(runtime_id, active_threads, throughput, latency, cpu_usage, timestamp)
-       VALUES($1,$2,$3,$4,$5,$6)`,
+      `INSERT INTO metrics(runtime_id, active_threads, throughput, latency, cpu_usage, timestamp, queued_tasks, running_tasks, completed_tasks)
+       VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`,
       [
         metrics.runtime_id,
         metrics.active_threads,
         metrics.throughput,
         metrics.latency,
         metrics.cpu_usage,
-        metrics.timestamp
+        metrics.timestamp,
+        metrics.queued_tasks,
+        metrics.running_tasks,
+        metrics.completed_tasks
       ]
     );
   } catch (err) {
@@ -147,6 +153,27 @@ app.post("/runtime/stop", (req, res) => {
     runtime_id: "runtime-1"
   }, (err, response) => {
     if (err) {
+      res.status(500).send(err);
+      return;
+    }
+    res.json(response);
+  });
+});
+
+app.post("/runtime/scheduler", (req, res) => {
+  const { mode } = req.body;
+
+  let protoMode = 0;
+  if (mode === "FIFO") protoMode = 0;
+  if (mode === "ROUND_ROBIN") protoMode = 1;
+  if (mode === "PRIO") protoMode = 2;
+
+  runtimeClient.SetSchedulerMode({
+    runtime_id: "runtime-1",
+    mode: protoMode
+  }, (err, response) => {
+    if (err) {
+      console.error(err);
       res.status(500).send(err);
       return;
     }

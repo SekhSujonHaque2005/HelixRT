@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: helixrt
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
+
+  runtime:
+    build:
+      context: .
+      dockerfile: apps/runtime/Dockerfile
+    ports:
+      - "50051:50051"
+
+  gateway:
+    build:
+      context: .
+      dockerfile: apps/gateway/Dockerfile
+    ports:
+      - "4000:4000"
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - runtime
+    environment:
+      - PGHOST=postgres
+      - GRPC_HOST=runtime:50051
+
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      # Need to make sure client fetch calls know how to reach gateway
+      # Since it's client-side, they resolve localhost
+      - NEXT_PUBLIC_GATEWAY_URL=http://localhost:4000
+      - NEXT_PUBLIC_WS_URL=ws://localhost:8080
+    depends_on:
+      - gateway
+
+volumes:
+  postgres_data:

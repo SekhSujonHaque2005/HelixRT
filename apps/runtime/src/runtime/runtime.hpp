@@ -15,6 +15,13 @@ public:
     void start();
     void stop();
     void submit(std::function<void()> task);
+    
+    enum class SchedulerMode { FIFO = 0, ROUND_ROBIN = 1, PRIO = 2 };
+    void set_scheduler_mode(SchedulerMode mode);
+
+    int get_queued_tasks();
+    int get_running_tasks() const;
+    long long get_completed_tasks() const;
 
 private:
     void worker_loop(int id);
@@ -40,4 +47,5 @@ private:
     std::chrono::steady_clock::time_point start_time;
 
     std::atomic<int> submit_index;
+    std::atomic<SchedulerMode> current_mode_{SchedulerMode::FIFO};
 };

@@ -15,6 +15,10 @@
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 namespace helixrt {
+class SetSchedulerRequestDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<SetSchedulerRequest> _instance;
+} _SetSchedulerRequest_default_instance_;
 class StartRequestDefaultTypeInternal {
  public:
   ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StartRequest> _instance;
@@ -49,6 +53,20 @@ static void InitDefaultsscc_info_RuntimeMetrics_runtime_2eproto() {
 
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_RuntimeMetrics_runtime_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_RuntimeMetrics_runtime_2eproto}, {}};
+
+static void InitDefaultsscc_info_SetSchedulerRequest_runtime_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::helixrt::_SetSchedulerRequest_default_instance_;
+    new (ptr) ::helixrt::SetSchedulerRequest();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::helixrt::SetSchedulerRequest::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_SetSchedulerRequest_runtime_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_SetSchedulerRequest_runtime_2eproto}, {}};
 
 static void InitDefaultsscc_info_StartRequest_runtime_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -106,11 +124,18 @@ static void InitDefaultsscc_info_StreamRequest_runtime_2eproto() {
 ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_StreamRequest_runtime_2eproto =
     {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_StreamRequest_runtime_2eproto}, {}};
 
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_runtime_2eproto[5];
-static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_runtime_2eproto = nullptr;
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_runtime_2eproto[6];
+static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_runtime_2eproto[1];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_runtime_2eproto = nullptr;
 
 const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_runtime_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::helixrt::SetSchedulerRequest, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::helixrt::SetSchedulerRequest, runtime_id_),
+  PROTOBUF_FIELD_OFFSET(::helixrt::SetSchedulerRequest, mode_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::helixrt::StartRequest, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -150,16 +175,21 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_runtime_2eproto::offsets[] PRO
   PROTOBUF_FIELD_OFFSET(::helixrt::RuntimeMetrics, timestamp_),
   PROTOBUF_FIELD_OFFSET(::helixrt::RuntimeMetrics, thread_id_),
   PROTOBUF_FIELD_OFFSET(::helixrt::RuntimeMetrics, task_id_),
+  PROTOBUF_FIELD_OFFSET(::helixrt::RuntimeMetrics, queued_tasks_),
+  PROTOBUF_FIELD_OFFSET(::helixrt::RuntimeMetrics, running_tasks_),
+  PROTOBUF_FIELD_OFFSET(::helixrt::RuntimeMetrics, completed_tasks_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::helixrt::StartRequest)},
-  { 7, -1, sizeof(::helixrt::StopRequest)},
-  { 13, -1, sizeof(::helixrt::StreamRequest)},
-  { 19, -1, sizeof(::helixrt::StatusResponse)},
-  { 26, -1, sizeof(::helixrt::RuntimeMetrics)},
+  { 0, -1, sizeof(::helixrt::SetSchedulerRequest)},
+  { 7, -1, sizeof(::helixrt::StartRequest)},
+  { 14, -1, sizeof(::helixrt::StopRequest)},
+  { 20, -1, sizeof(::helixrt::StreamRequest)},
+  { 26, -1, sizeof(::helixrt::StatusResponse)},
+  { 33, -1, sizeof(::helixrt::RuntimeMetrics)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::helixrt::_SetSchedulerRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::helixrt::_StartRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::helixrt::_StopRequest_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::helixrt::_StreamRequest_default_instance_),
@@ -168,27 +198,35 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 };
 
 const char descriptor_table_protodef_runtime_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\rruntime.proto\022\007helixrt\"8\n\014StartRequest"
-  "\022\022\n\nruntime_id\030\001 \001(\t\022\024\n\014thread_count\030\002 \001"
-  "(\005\"!\n\013StopRequest\022\022\n\nruntime_id\030\001 \001(\t\"#\n"
-  "\rStreamRequest\022\022\n\nruntime_id\030\001 \001(\t\"2\n\016St"
-  "atusResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007message"
-  "\030\002 \001(\t\"\253\001\n\016RuntimeMetrics\022\022\n\nruntime_id\030"
-  "\001 \001(\t\022\026\n\016active_threads\030\002 \001(\005\022\022\n\nthrough"
-  "put\030\003 \001(\001\022\017\n\007latency\030\004 \001(\001\022\021\n\tcpu_usage\030"
-  "\005 \001(\001\022\021\n\ttimestamp\030\006 \001(\003\022\021\n\tthread_id\030\007 "
-  "\001(\005\022\017\n\007task_id\030\010 \001(\0052\322\001\n\016RuntimeService\022"
-  ">\n\014StartRuntime\022\025.helixrt.StartRequest\032\027"
-  ".helixrt.StatusResponse\022<\n\013StopRuntime\022\024"
-  ".helixrt.StopRequest\032\027.helixrt.StatusRes"
-  "ponse\022B\n\rStreamMetrics\022\026.helixrt.StreamR"
-  "equest\032\027.helixrt.RuntimeMetrics0\001b\006proto"
+  "\n\rruntime.proto\022\007helixrt\"O\n\023SetScheduler"
+  "Request\022\022\n\nruntime_id\030\001 \001(\t\022$\n\004mode\030\002 \001("
+  "\0162\026.helixrt.SchedulerMode\"8\n\014StartReques"
+  "t\022\022\n\nruntime_id\030\001 \001(\t\022\024\n\014thread_count\030\002 "
+  "\001(\005\"!\n\013StopRequest\022\022\n\nruntime_id\030\001 \001(\t\"#"
+  "\n\rStreamRequest\022\022\n\nruntime_id\030\001 \001(\t\"2\n\016S"
+  "tatusResponse\022\017\n\007success\030\001 \001(\010\022\017\n\007messag"
+  "e\030\002 \001(\t\"\361\001\n\016RuntimeMetrics\022\022\n\nruntime_id"
+  "\030\001 \001(\t\022\026\n\016active_threads\030\002 \001(\005\022\022\n\nthroug"
+  "hput\030\003 \001(\001\022\017\n\007latency\030\004 \001(\001\022\021\n\tcpu_usage"
+  "\030\005 \001(\001\022\021\n\ttimestamp\030\006 \001(\003\022\021\n\tthread_id\030\007"
+  " \001(\005\022\017\n\007task_id\030\010 \001(\005\022\024\n\014queued_tasks\030\t "
+  "\001(\005\022\025\n\rrunning_tasks\030\n \001(\005\022\027\n\017completed_"
+  "tasks\030\013 \001(\005*4\n\rSchedulerMode\022\010\n\004FIFO\020\000\022\017"
+  "\n\013ROUND_ROBIN\020\001\022\010\n\004PRIO\020\0022\235\002\n\016RuntimeSer"
+  "vice\022>\n\014StartRuntime\022\025.helixrt.StartRequ"
+  "est\032\027.helixrt.StatusResponse\022<\n\013StopRunt"
+  "ime\022\024.helixrt.StopRequest\032\027.helixrt.Stat"
+  "usResponse\022B\n\rStreamMetrics\022\026.helixrt.St"
+  "reamRequest\032\027.helixrt.RuntimeMetrics0\001\022I"
+  "\n\020SetSchedulerMode\022\034.helixrt.SetSchedule"
+  "rRequest\032\027.helixrt.StatusResponseb\006proto"
   "3"
   ;
 static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_runtime_2eproto_deps[1] = {
 };
-static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_runtime_2eproto_sccs[5] = {
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_runtime_2eproto_sccs[6] = {
   &scc_info_RuntimeMetrics_runtime_2eproto.base,
+  &scc_info_SetSchedulerRequest_runtime_2eproto.base,
   &scc_info_StartRequest_runtime_2eproto.base,
   &scc_info_StatusResponse_runtime_2eproto.base,
   &scc_info_StopRequest_runtime_2eproto.base,
@@ -196,15 +234,267 @@ static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_run
 };
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_runtime_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_runtime_2eproto = {
-  false, false, descriptor_table_protodef_runtime_2eproto, "runtime.proto", 601,
-  &descriptor_table_runtime_2eproto_once, descriptor_table_runtime_2eproto_sccs, descriptor_table_runtime_2eproto_deps, 5, 0,
+  false, false, descriptor_table_protodef_runtime_2eproto, "runtime.proto", 881,
+  &descriptor_table_runtime_2eproto_once, descriptor_table_runtime_2eproto_sccs, descriptor_table_runtime_2eproto_deps, 6, 0,
   schemas, file_default_instances, TableStruct_runtime_2eproto::offsets,
-  file_level_metadata_runtime_2eproto, 5, file_level_enum_descriptors_runtime_2eproto, file_level_service_descriptors_runtime_2eproto,
+  file_level_metadata_runtime_2eproto, 6, file_level_enum_descriptors_runtime_2eproto, file_level_service_descriptors_runtime_2eproto,
 };
 
 // Force running AddDescriptors() at dynamic initialization time.
 static bool dynamic_init_dummy_runtime_2eproto = (static_cast<void>(::PROTOBUF_NAMESPACE_ID::internal::AddDescriptors(&descriptor_table_runtime_2eproto)), true);
 namespace helixrt {
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* SchedulerMode_descriptor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_runtime_2eproto);
+  return file_level_enum_descriptors_runtime_2eproto[0];
+}
+bool SchedulerMode_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+    case 2:
+      return true;
+    default:
+      return false;
+  }
+}
+
+
+// ===================================================================
+
+void SetSchedulerRequest::InitAsDefaultInstance() {
+}
+class SetSchedulerRequest::_Internal {
+ public:
+};
+
+SetSchedulerRequest::SetSchedulerRequest(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:helixrt.SetSchedulerRequest)
+}
+SetSchedulerRequest::SetSchedulerRequest(const SetSchedulerRequest& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  runtime_id_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_runtime_id().empty()) {
+    runtime_id_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_runtime_id(),
+      GetArena());
+  }
+  mode_ = from.mode_;
+  // @@protoc_insertion_point(copy_constructor:helixrt.SetSchedulerRequest)
+}
+
+void SetSchedulerRequest::SharedCtor() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_SetSchedulerRequest_runtime_2eproto.base);
+  runtime_id_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  mode_ = 0;
+}
+
+SetSchedulerRequest::~SetSchedulerRequest() {
+  // @@protoc_insertion_point(destructor:helixrt.SetSchedulerRequest)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void SetSchedulerRequest::SharedDtor() {
+  GOOGLE_DCHECK(GetArena() == nullptr);
+  runtime_id_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void SetSchedulerRequest::ArenaDtor(void* object) {
+  SetSchedulerRequest* _this = reinterpret_cast< SetSchedulerRequest* >(object);
+  (void)_this;
+}
+void SetSchedulerRequest::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void SetSchedulerRequest::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+const SetSchedulerRequest& SetSchedulerRequest::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_SetSchedulerRequest_runtime_2eproto.base);
+  return *internal_default_instance();
+}
+
+
+void SetSchedulerRequest::Clear() {
+// @@protoc_insertion_point(message_clear_start:helixrt.SetSchedulerRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  runtime_id_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  mode_ = 0;
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* SetSchedulerRequest::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
+    switch (tag >> 3) {
+      // string runtime_id = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+          auto str = _internal_mutable_runtime_id();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "helixrt.SetSchedulerRequest.runtime_id"));
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // .helixrt.SchedulerMode mode = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_mode(static_cast<::helixrt::SchedulerMode>(val));
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag & 7) == 4 || tag == 0) {
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* SetSchedulerRequest::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:helixrt.SetSchedulerRequest)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string runtime_id = 1;
+  if (this->runtime_id().size() > 0) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_runtime_id().data(), static_cast<int>(this->_internal_runtime_id().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "helixrt.SetSchedulerRequest.runtime_id");
+    target = stream->WriteStringMaybeAliased(
+        1, this->_internal_runtime_id(), target);
+  }
+
+  // .helixrt.SchedulerMode mode = 2;
+  if (this->mode() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
+      2, this->_internal_mode(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:helixrt.SetSchedulerRequest)
+  return target;
+}
+
+size_t SetSchedulerRequest::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:helixrt.SetSchedulerRequest)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string runtime_id = 1;
+  if (this->runtime_id().size() > 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_runtime_id());
+  }
+
+  // .helixrt.SchedulerMode mode = 2;
+  if (this->mode() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_mode());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void SetSchedulerRequest::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:helixrt.SetSchedulerRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  const SetSchedulerRequest* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<SetSchedulerRequest>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:helixrt.SetSchedulerRequest)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:helixrt.SetSchedulerRequest)
+    MergeFrom(*source);
+  }
+}
+
+void SetSchedulerRequest::MergeFrom(const SetSchedulerRequest& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:helixrt.SetSchedulerRequest)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.runtime_id().size() > 0) {
+    _internal_set_runtime_id(from._internal_runtime_id());
+  }
+  if (from.mode() != 0) {
+    _internal_set_mode(from._internal_mode());
+  }
+}
+
+void SetSchedulerRequest::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:helixrt.SetSchedulerRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void SetSchedulerRequest::CopyFrom(const SetSchedulerRequest& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:helixrt.SetSchedulerRequest)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SetSchedulerRequest::IsInitialized() const {
+  return true;
+}
+
+void SetSchedulerRequest::InternalSwap(SetSchedulerRequest* other) {
+  using std::swap;
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  runtime_id_.Swap(&other->runtime_id_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
+  swap(mode_, other->mode_);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata SetSchedulerRequest::GetMetadata() const {
+  return GetMetadataStatic();
+}
+
 
 // ===================================================================
 
@@ -1117,8 +1407,8 @@ RuntimeMetrics::RuntimeMetrics(const RuntimeMetrics& from)
       GetArena());
   }
   ::memcpy(&throughput_, &from.throughput_,
-    static_cast<size_t>(reinterpret_cast<char*>(&task_id_) -
-    reinterpret_cast<char*>(&throughput_)) + sizeof(task_id_));
+    static_cast<size_t>(reinterpret_cast<char*>(&completed_tasks_) -
+    reinterpret_cast<char*>(&throughput_)) + sizeof(completed_tasks_));
   // @@protoc_insertion_point(copy_constructor:helixrt.RuntimeMetrics)
 }
 
@@ -1126,8 +1416,8 @@ void RuntimeMetrics::SharedCtor() {
   ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_RuntimeMetrics_runtime_2eproto.base);
   runtime_id_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   ::memset(&throughput_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&task_id_) -
-      reinterpret_cast<char*>(&throughput_)) + sizeof(task_id_));
+      reinterpret_cast<char*>(&completed_tasks_) -
+      reinterpret_cast<char*>(&throughput_)) + sizeof(completed_tasks_));
 }
 
 RuntimeMetrics::~RuntimeMetrics() {
@@ -1164,8 +1454,8 @@ void RuntimeMetrics::Clear() {
 
   runtime_id_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   ::memset(&throughput_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&task_id_) -
-      reinterpret_cast<char*>(&throughput_)) + sizeof(task_id_));
+      reinterpret_cast<char*>(&completed_tasks_) -
+      reinterpret_cast<char*>(&throughput_)) + sizeof(completed_tasks_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1232,6 +1522,27 @@ const char* RuntimeMetrics::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE
       case 8:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 64)) {
           task_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 queued_tasks = 9;
+      case 9:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 72)) {
+          queued_tasks_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 running_tasks = 10;
+      case 10:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 80)) {
+          running_tasks_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // int32 completed_tasks = 11;
+      case 11:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 88)) {
+          completed_tasks_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -1315,6 +1626,24 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(8, this->_internal_task_id(), target);
   }
 
+  // int32 queued_tasks = 9;
+  if (this->queued_tasks() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(9, this->_internal_queued_tasks(), target);
+  }
+
+  // int32 running_tasks = 10;
+  if (this->running_tasks() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(10, this->_internal_running_tasks(), target);
+  }
+
+  // int32 completed_tasks = 11;
+  if (this->completed_tasks() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(11, this->_internal_completed_tasks(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1381,6 +1710,27 @@ size_t RuntimeMetrics::ByteSizeLong() const {
         this->_internal_task_id());
   }
 
+  // int32 queued_tasks = 9;
+  if (this->queued_tasks() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_queued_tasks());
+  }
+
+  // int32 running_tasks = 10;
+  if (this->running_tasks() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_running_tasks());
+  }
+
+  // int32 completed_tasks = 11;
+  if (this->completed_tasks() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::Int32Size(
+        this->_internal_completed_tasks());
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
         _internal_metadata_, total_size, &_cached_size_);
@@ -1436,6 +1786,15 @@ void RuntimeMetrics::MergeFrom(const RuntimeMetrics& from) {
   if (from.task_id() != 0) {
     _internal_set_task_id(from._internal_task_id());
   }
+  if (from.queued_tasks() != 0) {
+    _internal_set_queued_tasks(from._internal_queued_tasks());
+  }
+  if (from.running_tasks() != 0) {
+    _internal_set_running_tasks(from._internal_running_tasks());
+  }
+  if (from.completed_tasks() != 0) {
+    _internal_set_completed_tasks(from._internal_completed_tasks());
+  }
 }
 
 void RuntimeMetrics::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
@@ -1461,8 +1820,8 @@ void RuntimeMetrics::InternalSwap(RuntimeMetrics* other) {
   _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   runtime_id_.Swap(&other->runtime_id_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(RuntimeMetrics, task_id_)
-      + sizeof(RuntimeMetrics::task_id_)
+      PROTOBUF_FIELD_OFFSET(RuntimeMetrics, completed_tasks_)
+      + sizeof(RuntimeMetrics::completed_tasks_)
       - PROTOBUF_FIELD_OFFSET(RuntimeMetrics, throughput_)>(
           reinterpret_cast<char*>(&throughput_),
           reinterpret_cast<char*>(&other->throughput_));
@@ -1476,6 +1835,9 @@ void RuntimeMetrics::InternalSwap(RuntimeMetrics* other) {
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace helixrt
 PROTOBUF_NAMESPACE_OPEN
+template<> PROTOBUF_NOINLINE ::helixrt::SetSchedulerRequest* Arena::CreateMaybeMessage< ::helixrt::SetSchedulerRequest >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::helixrt::SetSchedulerRequest >(arena);
+}
 template<> PROTOBUF_NOINLINE ::helixrt::StartRequest* Arena::CreateMaybeMessage< ::helixrt::StartRequest >(Arena* arena) {
   return Arena::CreateMessageInternal< ::helixrt::StartRequest >(arena);
 }

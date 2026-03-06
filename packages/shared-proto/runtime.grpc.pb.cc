@@ -25,6 +25,7 @@ static const char* RuntimeService_method_names[] = {
   "/helixrt.RuntimeService/StartRuntime",
   "/helixrt.RuntimeService/StopRuntime",
   "/helixrt.RuntimeService/StreamMetrics",
+  "/helixrt.RuntimeService/SetSchedulerMode",
 };
 
 std::unique_ptr< RuntimeService::Stub> RuntimeService::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -37,6 +38,7 @@ RuntimeService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& cha
   : channel_(channel), rpcmethod_StartRuntime_(RuntimeService_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_StopRuntime_(RuntimeService_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_StreamMetrics_(RuntimeService_method_names[2], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
+  , rpcmethod_SetSchedulerMode_(RuntimeService_method_names[3], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status RuntimeService::Stub::StartRuntime(::grpc::ClientContext* context, const ::helixrt::StartRequest& request, ::helixrt::StatusResponse* response) {
@@ -111,6 +113,34 @@ void RuntimeService::Stub::experimental_async::StreamMetrics(::grpc::ClientConte
   return ::grpc_impl::internal::ClientAsyncReaderFactory< ::helixrt::RuntimeMetrics>::Create(channel_.get(), cq, rpcmethod_StreamMetrics_, context, request, false, nullptr);
 }
 
+::grpc::Status RuntimeService::Stub::SetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest& request, ::helixrt::StatusResponse* response) {
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_SetSchedulerMode_, context, request, response);
+}
+
+void RuntimeService::Stub::experimental_async::SetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest* request, ::helixrt::StatusResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_SetSchedulerMode_, context, request, response, std::move(f));
+}
+
+void RuntimeService::Stub::experimental_async::SetSchedulerMode(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::helixrt::StatusResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_SetSchedulerMode_, context, request, response, std::move(f));
+}
+
+void RuntimeService::Stub::experimental_async::SetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest* request, ::helixrt::StatusResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_SetSchedulerMode_, context, request, response, reactor);
+}
+
+void RuntimeService::Stub::experimental_async::SetSchedulerMode(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::helixrt::StatusResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_SetSchedulerMode_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::helixrt::StatusResponse>* RuntimeService::Stub::AsyncSetSchedulerModeRaw(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::helixrt::StatusResponse>::Create(channel_.get(), cq, rpcmethod_SetSchedulerMode_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::helixrt::StatusResponse>* RuntimeService::Stub::PrepareAsyncSetSchedulerModeRaw(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::helixrt::StatusResponse>::Create(channel_.get(), cq, rpcmethod_SetSchedulerMode_, context, request, false);
+}
+
 RuntimeService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       RuntimeService_method_names[0],
@@ -142,6 +172,16 @@ RuntimeService::Service::Service() {
              ::grpc_impl::ServerWriter<::helixrt::RuntimeMetrics>* writer) {
                return service->StreamMetrics(ctx, req, writer);
              }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      RuntimeService_method_names[3],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< RuntimeService::Service, ::helixrt::SetSchedulerRequest, ::helixrt::StatusResponse>(
+          [](RuntimeService::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::helixrt::SetSchedulerRequest* req,
+             ::helixrt::StatusResponse* resp) {
+               return service->SetSchedulerMode(ctx, req, resp);
+             }, this)));
 }
 
 RuntimeService::Service::~Service() {
@@ -165,6 +205,13 @@ RuntimeService::Service::~Service() {
   (void) context;
   (void) request;
   (void) writer;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status RuntimeService::Service::SetSchedulerMode(::grpc::ServerContext* context, const ::helixrt::SetSchedulerRequest* request, ::helixrt::StatusResponse* response) {
+  (void) context;
+  (void) request;
+  (void) response;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 

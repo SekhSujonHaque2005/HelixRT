@@ -2,10 +2,22 @@ syntax = "proto3";
 
 package helixrt;
 
+enum SchedulerMode {
+  FIFO = 0;
+  ROUND_ROBIN = 1;
+  PRIO = 2;
+}
+
 service RuntimeService {
   rpc StartRuntime (StartRequest) returns (StatusResponse);
   rpc StopRuntime (StopRequest) returns (StatusResponse);
   rpc StreamMetrics (StreamRequest) returns (stream RuntimeMetrics);
+  rpc SetSchedulerMode (SetSchedulerRequest) returns (StatusResponse);
+}
+
+message SetSchedulerRequest {
+  string runtime_id = 1;
+  SchedulerMode mode = 2;
 }
 
 message StartRequest {
@@ -36,4 +48,8 @@ message RuntimeMetrics {
 
   int32 thread_id = 7;
   int32 task_id = 8;
+  
+  int32 queued_tasks = 9;
+  int32 running_tasks = 10;
+  int32 completed_tasks = 11;
 }

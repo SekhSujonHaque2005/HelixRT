@@ -58,26 +58,55 @@ bool Runtime::steal_task(int thief_id, std::function<void()>& task) {
     return false;
 }
 
+void Runtime::set_scheduler_mode(SchedulerMode mode) {
+    current_mode_ = mode;
+}
+
 void Runtime::worker_loop(int id) {
 
     while (running) {
 
         std::function<void()> task;
 
-        {
-            std::lock_guard<std::mutex> lock(*queue_mutexes[id]);
+        if (current_mode_ == SchedulerMode::ROUND_ROBIN) {
+            // For Round Robin, try to steal from everyone including self in a circle
+            int start_idx = (id + (total_tasks_executed.load() % thread_count)) % thread_count;
+            for (int i = 0; i < thread_count; i++) {
+                int target = (start_idx + i) % thread_count;
+                std::lock_guard<std::mutex> lock(*queue_mutexes[target]);
+                if (!task_queues[target].empty()) {
+                    task = std::move(task_queues[target].front());
+                    task_queues[target].pop_front();
+                    break;
+                }
+            }
+        } else {
+            // Default check own queue first
+            {
+                std::lock_guard<std::mutex> lock(*queue_mutexes[id]);
 
-            if (!task_queues[id].empty()) {
-                task = std::move(task_queues[id].back());
-                task_queues[id].pop_back();
+                if (!task_queues[id].empty()) {
+                    if (current_mode_ == SchedulerMode::FIFO) {
+                        task = std::move(task_queues[id].front());
+                        task_queues[id].pop_front();
+                    } else { // PRIO / LIFO
+                        task = std::move(task_queues[id].back());
+                        task_queues[id].pop_back();
+                    }
+                }
+            }
+
+            if (!task) {
+                if (!steal_task(id, task)) {
+                    std::this_thread::yield();
+                    continue;
+                }
             }
         }
 
         if (!task) {
-            if (!steal_task(id, task)) {
-                std::this_thread::yield();
-                continue;
-            }
+            std::this_thread::yield();
+            continue;
         }
 
         active_threads++;
@@ -122,4 +151,21 @@ void Runtime::stop() {
 
     if (metrics_thread.joinable())
         metrics_thread.join();
+}
+
+int Runtime::get_queued_tasks() {
+    int count = 0;
+    for (int i = 0; i < thread_count; i++) {
+        std::lock_guard<std::mutex> lock(*queue_mutexes[i]);
+        count += task_queues[i].size();
+    }
+    return count;
+}
+
+int Runtime::get_running_tasks() const {
+    return active_threads.load();
+}
+
+long long Runtime::get_completed_tasks() const {
+    return total_tasks_executed.load();
 }

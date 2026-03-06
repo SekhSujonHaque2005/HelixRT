@@ -59,6 +59,13 @@ class RuntimeService final {
     std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::helixrt::RuntimeMetrics>> PrepareAsyncStreamMetrics(::grpc::ClientContext* context, const ::helixrt::StreamRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::helixrt::RuntimeMetrics>>(PrepareAsyncStreamMetricsRaw(context, request, cq));
     }
+    virtual ::grpc::Status SetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest& request, ::helixrt::StatusResponse* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::helixrt::StatusResponse>> AsyncSetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::helixrt::StatusResponse>>(AsyncSetSchedulerModeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::helixrt::StatusResponse>> PrepareAsyncSetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::helixrt::StatusResponse>>(PrepareAsyncSetSchedulerModeRaw(context, request, cq));
+    }
     class experimental_async_interface {
      public:
       virtual ~experimental_async_interface() {}
@@ -91,6 +98,18 @@ class RuntimeService final {
       #else
       virtual void StreamMetrics(::grpc::ClientContext* context, ::helixrt::StreamRequest* request, ::grpc::experimental::ClientReadReactor< ::helixrt::RuntimeMetrics>* reactor) = 0;
       #endif
+      virtual void SetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest* request, ::helixrt::StatusResponse* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void SetSchedulerMode(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::helixrt::StatusResponse* response, std::function<void(::grpc::Status)>) = 0;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void SetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest* request, ::helixrt::StatusResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void SetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest* request, ::helixrt::StatusResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      virtual void SetSchedulerMode(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::helixrt::StatusResponse* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      #else
+      virtual void SetSchedulerMode(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::helixrt::StatusResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) = 0;
+      #endif
     };
     #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
     typedef class experimental_async_interface async_interface;
@@ -107,6 +126,8 @@ class RuntimeService final {
     virtual ::grpc::ClientReaderInterface< ::helixrt::RuntimeMetrics>* StreamMetricsRaw(::grpc::ClientContext* context, const ::helixrt::StreamRequest& request) = 0;
     virtual ::grpc::ClientAsyncReaderInterface< ::helixrt::RuntimeMetrics>* AsyncStreamMetricsRaw(::grpc::ClientContext* context, const ::helixrt::StreamRequest& request, ::grpc::CompletionQueue* cq, void* tag) = 0;
     virtual ::grpc::ClientAsyncReaderInterface< ::helixrt::RuntimeMetrics>* PrepareAsyncStreamMetricsRaw(::grpc::ClientContext* context, const ::helixrt::StreamRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::helixrt::StatusResponse>* AsyncSetSchedulerModeRaw(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::helixrt::StatusResponse>* PrepareAsyncSetSchedulerModeRaw(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
@@ -133,6 +154,13 @@ class RuntimeService final {
     }
     std::unique_ptr< ::grpc::ClientAsyncReader< ::helixrt::RuntimeMetrics>> PrepareAsyncStreamMetrics(::grpc::ClientContext* context, const ::helixrt::StreamRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncReader< ::helixrt::RuntimeMetrics>>(PrepareAsyncStreamMetricsRaw(context, request, cq));
+    }
+    ::grpc::Status SetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest& request, ::helixrt::StatusResponse* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::helixrt::StatusResponse>> AsyncSetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::helixrt::StatusResponse>>(AsyncSetSchedulerModeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::helixrt::StatusResponse>> PrepareAsyncSetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::helixrt::StatusResponse>>(PrepareAsyncSetSchedulerModeRaw(context, request, cq));
     }
     class experimental_async final :
       public StubInterface::experimental_async_interface {
@@ -166,6 +194,18 @@ class RuntimeService final {
       #else
       void StreamMetrics(::grpc::ClientContext* context, ::helixrt::StreamRequest* request, ::grpc::experimental::ClientReadReactor< ::helixrt::RuntimeMetrics>* reactor) override;
       #endif
+      void SetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest* request, ::helixrt::StatusResponse* response, std::function<void(::grpc::Status)>) override;
+      void SetSchedulerMode(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::helixrt::StatusResponse* response, std::function<void(::grpc::Status)>) override;
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void SetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest* request, ::helixrt::StatusResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void SetSchedulerMode(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest* request, ::helixrt::StatusResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
+      #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      void SetSchedulerMode(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::helixrt::StatusResponse* response, ::grpc::ClientUnaryReactor* reactor) override;
+      #else
+      void SetSchedulerMode(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::helixrt::StatusResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) override;
+      #endif
      private:
       friend class Stub;
       explicit experimental_async(Stub* stub): stub_(stub) { }
@@ -184,9 +224,12 @@ class RuntimeService final {
     ::grpc::ClientReader< ::helixrt::RuntimeMetrics>* StreamMetricsRaw(::grpc::ClientContext* context, const ::helixrt::StreamRequest& request) override;
     ::grpc::ClientAsyncReader< ::helixrt::RuntimeMetrics>* AsyncStreamMetricsRaw(::grpc::ClientContext* context, const ::helixrt::StreamRequest& request, ::grpc::CompletionQueue* cq, void* tag) override;
     ::grpc::ClientAsyncReader< ::helixrt::RuntimeMetrics>* PrepareAsyncStreamMetricsRaw(::grpc::ClientContext* context, const ::helixrt::StreamRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::helixrt::StatusResponse>* AsyncSetSchedulerModeRaw(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::helixrt::StatusResponse>* PrepareAsyncSetSchedulerModeRaw(::grpc::ClientContext* context, const ::helixrt::SetSchedulerRequest& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_StartRuntime_;
     const ::grpc::internal::RpcMethod rpcmethod_StopRuntime_;
     const ::grpc::internal::RpcMethod rpcmethod_StreamMetrics_;
+    const ::grpc::internal::RpcMethod rpcmethod_SetSchedulerMode_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -197,6 +240,7 @@ class RuntimeService final {
     virtual ::grpc::Status StartRuntime(::grpc::ServerContext* context, const ::helixrt::StartRequest* request, ::helixrt::StatusResponse* response);
     virtual ::grpc::Status StopRuntime(::grpc::ServerContext* context, const ::helixrt::StopRequest* request, ::helixrt::StatusResponse* response);
     virtual ::grpc::Status StreamMetrics(::grpc::ServerContext* context, const ::helixrt::StreamRequest* request, ::grpc::ServerWriter< ::helixrt::RuntimeMetrics>* writer);
+    virtual ::grpc::Status SetSchedulerMode(::grpc::ServerContext* context, const ::helixrt::SetSchedulerRequest* request, ::helixrt::StatusResponse* response);
   };
   template <class BaseClass>
   class WithAsyncMethod_StartRuntime : public BaseClass {
@@ -258,7 +302,27 @@ class RuntimeService final {
       ::grpc::Service::RequestAsyncServerStreaming(2, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_StartRuntime<WithAsyncMethod_StopRuntime<WithAsyncMethod_StreamMetrics<Service > > > AsyncService;
+  template <class BaseClass>
+  class WithAsyncMethod_SetSchedulerMode : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_SetSchedulerMode() {
+      ::grpc::Service::MarkMethodAsync(3);
+    }
+    ~WithAsyncMethod_SetSchedulerMode() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status SetSchedulerMode(::grpc::ServerContext* /*context*/, const ::helixrt::SetSchedulerRequest* /*request*/, ::helixrt::StatusResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestSetSchedulerMode(::grpc::ServerContext* context, ::helixrt::SetSchedulerRequest* request, ::grpc::ServerAsyncResponseWriter< ::helixrt::StatusResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_StartRuntime<WithAsyncMethod_StopRuntime<WithAsyncMethod_StreamMetrics<WithAsyncMethod_SetSchedulerMode<Service > > > > AsyncService;
   template <class BaseClass>
   class ExperimentalWithCallbackMethod_StartRuntime : public BaseClass {
    private:
@@ -391,11 +455,58 @@ class RuntimeService final {
     #endif
       { return nullptr; }
   };
+  template <class BaseClass>
+  class ExperimentalWithCallbackMethod_SetSchedulerMode : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithCallbackMethod_SetSchedulerMode() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodCallback(3,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::helixrt::SetSchedulerRequest, ::helixrt::StatusResponse>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::helixrt::SetSchedulerRequest* request, ::helixrt::StatusResponse* response) { return this->SetSchedulerMode(context, request, response); }));}
+    void SetMessageAllocatorFor_SetSchedulerMode(
+        ::grpc::experimental::MessageAllocator< ::helixrt::SetSchedulerRequest, ::helixrt::StatusResponse>* allocator) {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(3);
+    #else
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::experimental().GetHandler(3);
+    #endif
+      static_cast<::grpc_impl::internal::CallbackUnaryHandler< ::helixrt::SetSchedulerRequest, ::helixrt::StatusResponse>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~ExperimentalWithCallbackMethod_SetSchedulerMode() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status SetSchedulerMode(::grpc::ServerContext* /*context*/, const ::helixrt::SetSchedulerRequest* /*request*/, ::helixrt::StatusResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* SetSchedulerMode(
+      ::grpc::CallbackServerContext* /*context*/, const ::helixrt::SetSchedulerRequest* /*request*/, ::helixrt::StatusResponse* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* SetSchedulerMode(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::helixrt::SetSchedulerRequest* /*request*/, ::helixrt::StatusResponse* /*response*/)
+    #endif
+      { return nullptr; }
+  };
   #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
-  typedef ExperimentalWithCallbackMethod_StartRuntime<ExperimentalWithCallbackMethod_StopRuntime<ExperimentalWithCallbackMethod_StreamMetrics<Service > > > CallbackService;
+  typedef ExperimentalWithCallbackMethod_StartRuntime<ExperimentalWithCallbackMethod_StopRuntime<ExperimentalWithCallbackMethod_StreamMetrics<ExperimentalWithCallbackMethod_SetSchedulerMode<Service > > > > CallbackService;
   #endif
 
-  typedef ExperimentalWithCallbackMethod_StartRuntime<ExperimentalWithCallbackMethod_StopRuntime<ExperimentalWithCallbackMethod_StreamMetrics<Service > > > ExperimentalCallbackService;
+  typedef ExperimentalWithCallbackMethod_StartRuntime<ExperimentalWithCallbackMethod_StopRuntime<ExperimentalWithCallbackMethod_StreamMetrics<ExperimentalWithCallbackMethod_SetSchedulerMode<Service > > > > ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_StartRuntime : public BaseClass {
    private:
@@ -443,6 +554,23 @@ class RuntimeService final {
     }
     // disable synchronous version of this method
     ::grpc::Status StreamMetrics(::grpc::ServerContext* /*context*/, const ::helixrt::StreamRequest* /*request*/, ::grpc::ServerWriter< ::helixrt::RuntimeMetrics>* /*writer*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_SetSchedulerMode : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_SetSchedulerMode() {
+      ::grpc::Service::MarkMethodGeneric(3);
+    }
+    ~WithGenericMethod_SetSchedulerMode() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status SetSchedulerMode(::grpc::ServerContext* /*context*/, const ::helixrt::SetSchedulerRequest* /*request*/, ::helixrt::StatusResponse* /*response*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -505,6 +633,26 @@ class RuntimeService final {
     }
     void RequestStreamMetrics(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncWriter< ::grpc::ByteBuffer>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncServerStreaming(2, context, request, writer, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_SetSchedulerMode : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_SetSchedulerMode() {
+      ::grpc::Service::MarkMethodRaw(3);
+    }
+    ~WithRawMethod_SetSchedulerMode() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status SetSchedulerMode(::grpc::ServerContext* /*context*/, const ::helixrt::SetSchedulerRequest* /*request*/, ::helixrt::StatusResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestSetSchedulerMode(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(3, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -622,6 +770,44 @@ class RuntimeService final {
       { return nullptr; }
   };
   template <class BaseClass>
+  class ExperimentalWithRawCallbackMethod_SetSchedulerMode : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    ExperimentalWithRawCallbackMethod_SetSchedulerMode() {
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+      ::grpc::Service::
+    #else
+      ::grpc::Service::experimental().
+    #endif
+        MarkMethodRawCallback(3,
+          new ::grpc_impl::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+                   ::grpc::CallbackServerContext*
+    #else
+                   ::grpc::experimental::CallbackServerContext*
+    #endif
+                     context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->SetSchedulerMode(context, request, response); }));
+    }
+    ~ExperimentalWithRawCallbackMethod_SetSchedulerMode() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status SetSchedulerMode(::grpc::ServerContext* /*context*/, const ::helixrt::SetSchedulerRequest* /*request*/, ::helixrt::StatusResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    #ifdef GRPC_CALLBACK_API_NONEXPERIMENTAL
+    virtual ::grpc::ServerUnaryReactor* SetSchedulerMode(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #else
+    virtual ::grpc::experimental::ServerUnaryReactor* SetSchedulerMode(
+      ::grpc::experimental::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)
+    #endif
+      { return nullptr; }
+  };
+  template <class BaseClass>
   class WithStreamedUnaryMethod_StartRuntime : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
@@ -675,7 +861,34 @@ class RuntimeService final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedStopRuntime(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::helixrt::StopRequest,::helixrt::StatusResponse>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_StartRuntime<WithStreamedUnaryMethod_StopRuntime<Service > > StreamedUnaryService;
+  template <class BaseClass>
+  class WithStreamedUnaryMethod_SetSchedulerMode : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_SetSchedulerMode() {
+      ::grpc::Service::MarkMethodStreamed(3,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::helixrt::SetSchedulerRequest, ::helixrt::StatusResponse>(
+            [this](::grpc_impl::ServerContext* context,
+                   ::grpc_impl::ServerUnaryStreamer<
+                     ::helixrt::SetSchedulerRequest, ::helixrt::StatusResponse>* streamer) {
+                       return this->StreamedSetSchedulerMode(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_SetSchedulerMode() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status SetSchedulerMode(::grpc::ServerContext* /*context*/, const ::helixrt::SetSchedulerRequest* /*request*/, ::helixrt::StatusResponse* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedSetSchedulerMode(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::helixrt::SetSchedulerRequest,::helixrt::StatusResponse>* server_unary_streamer) = 0;
+  };
+  typedef WithStreamedUnaryMethod_StartRuntime<WithStreamedUnaryMethod_StopRuntime<WithStreamedUnaryMethod_SetSchedulerMode<Service > > > StreamedUnaryService;
   template <class BaseClass>
   class WithSplitStreamingMethod_StreamMetrics : public BaseClass {
    private:
@@ -704,7 +917,7 @@ class RuntimeService final {
     virtual ::grpc::Status StreamedStreamMetrics(::grpc::ServerContext* context, ::grpc::ServerSplitStreamer< ::helixrt::StreamRequest,::helixrt::RuntimeMetrics>* server_split_streamer) = 0;
   };
   typedef WithSplitStreamingMethod_StreamMetrics<Service > SplitStreamedService;
-  typedef WithStreamedUnaryMethod_StartRuntime<WithStreamedUnaryMethod_StopRuntime<WithSplitStreamingMethod_StreamMetrics<Service > > > StreamedService;
+  typedef WithStreamedUnaryMethod_StartRuntime<WithStreamedUnaryMethod_StopRuntime<WithSplitStreamingMethod_StreamMetrics<WithStreamedUnaryMethod_SetSchedulerMode<Service > > > > StreamedService;
 };
 
 }  // namespace helixrt
