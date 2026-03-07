@@ -58,6 +58,8 @@ flowchart TD
 7. **Runtime Control**: Start/Stop the C++ metrics telemetry remotely.
 8. **Pluggable Schedulers**: Change the execution task-pull strategy at runtime.
 9. **Dockerized Deployment**: Fully containerized environment for quick spin-up.
+10. **Product Tour**: Interactive guided tour of the dashboard features.
+11. **Blog Engine**: Dynamic routing for technical articles and documentation.
 
 ---
 
@@ -77,27 +79,48 @@ There are two main ways to run this project: **Locally** and using **Docker**.
 
 ### 1. Docker Deployment (Recommended)
 
+**Prerequisites:**
+- [Docker Engine or Docker Desktop](https://docs.docker.com/get-docker/) installed.
+- Docker Compose installed (usually included in Docker Desktop).
+
 To run the entire stack (Database, C++ Runtime, Node Gateway, Next.js Frontend) in one command:
 
 ```bash
-docker-compose up --build
+DOCKER_BUILDKIT=0 docker-compose up --build
 ```
-*The Dashboard will be available at `http://localhost:3000/dashboard`*
+*Note: The first time you run this, it will build the containers and initialize the PostgreSQL database automatically.*
+
+**Access the Applications:**
+* Next.js Dashboard: `http://localhost:3000/dashboard`
+* Next.js Blog: `http://localhost:3000/blog`
+
+To stop the servers and clean up:
+```bash
+docker-compose down -v
+```
+
+---
 
 ### 2. Local Setup 
 
 **Prerequisites**:
-- CMake and a recent C++ compiler
-- Protocol Buffers and gRPC
-- Node.js >18
-- PostgreSQL
+- [Node.js](https://nodejs.org/) (v18 or higher)
+- [PostgreSQL](https://www.postgresql.org/download/)
+- CMake and a recent C++ compiler (GCC/Clang)
+- Protocol Buffers & gRPC C++ libraries installed on your system
 
 **Step 1: Database Setup**
+First, you need to create the database in PostgreSQL before running the initialization script:
 ```bash
+# Create the database
+psql -U postgres -c "CREATE DATABASE helixrt;"
+
+# Run the schema initialization script
 psql -U postgres -f init-db.sql
 ```
 
-**Step 2: Start C++ Runtime**
+**Step 2: Start C++ Runtime Engine**
+This process runs on `localhost:50051`.
 ```bash
 cd apps/runtime
 mkdir -p build && cd build
@@ -107,6 +130,7 @@ make
 ```
 
 **Step 3: Start Node API Gateway**
+This process connects to the database, exposes a REST/WebSocket API on `localhost:4000` & `8080`, and connects to the C++ gRPC Runtime.
 ```bash
 cd apps/gateway
 npm install
@@ -120,4 +144,4 @@ npm install
 npm run dev
 ```
 
-Navigate to `http://localhost:3000/dashboard`!
+Navigate to `http://localhost:3000/dashboard` or `http://localhost:3000/blog`!
