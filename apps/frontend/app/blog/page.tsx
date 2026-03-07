@@ -4,6 +4,7 @@ import { ArrowRight, Clock, User } from "lucide-react";
 
 const posts = [
     {
+        slug: "cpp20-telemetry-engine",
         title: "Why We Chose C++20 for the Telemetry Engine",
         date: "October 12, 2026",
         author: "HelixRT Core Team",
@@ -11,6 +12,7 @@ const posts = [
         category: "Architecture"
     },
     {
+        slug: "visualizing-thread-contention",
         title: "Visualizing Thread Contention at 60 FPS",
         date: "September 05, 2026",
         author: "Frontend Engineering",
@@ -18,6 +20,7 @@ const posts = [
         category: "Frontend"
     },
     {
+        slug: "understanding-work-stealing",
         title: "Understanding Work-Stealing Queues",
         date: "August 18, 2026",
         author: "Systems Architecture",
@@ -41,7 +44,7 @@ export default function BlogPage() {
 
                 <div className="grid gap-8">
                     {posts.map((post, idx) => (
-                        <article key={idx} className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 hover:shadow-xl transition-all duration-300">
+                        <article key={idx} className="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                             <div className="flex items-center gap-4 text-sm text-emerald-600 dark:text-emerald-400 font-medium mb-4">
                                 <span>{post.category}</span>
                                 <span className="text-slate-300 dark:text-slate-700">•</span>
@@ -51,7 +54,7 @@ export default function BlogPage() {
                                 </div>
                             </div>
 
-                            <Link href="#" className="block">
+                            <Link href={`/blog/${post.slug}`} className="block">
                                 <h2 className="text-2xl md:text-3xl font-bold mb-4 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                                     {post.title}
                                 </h2>
@@ -68,7 +71,7 @@ export default function BlogPage() {
                                     </div>
                                     <span className="font-medium">{post.author}</span>
                                 </div>
-                                <Link href="#" className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-medium hover:underline">
+                                <Link href={`/blog/${post.slug}`} className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-medium hover:underline group-hover:translate-x-1 transition-transform">
                                     Read Article <ArrowRight size={16} />
                                 </Link>
                             </div>

@@ -33,9 +33,17 @@ const db = new Client({
   port: 5432
 });
 
-db.connect()
-  .then(() => console.log("Connected to PostgreSQL"))
-  .catch(err => console.error("DB Connection Error:", err));
+const connectWithRetry = () => {
+  db.connect()
+    .then(() => console.log("Connected to PostgreSQL"))
+    .catch(err => {
+      console.error("DB Connection Error:", err.message);
+      console.log("Retrying DB connection in 5 seconds...");
+      setTimeout(connectWithRetry, 5000);
+    });
+};
+
+connectWithRetry();
 
 /* ---------- Load gRPC Proto ---------- */
 
