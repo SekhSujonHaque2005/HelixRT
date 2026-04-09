@@ -21,7 +21,7 @@ FROM ubuntu:22.04
 # Install Node.js 18 and necessary runtime libs for C++ gRPC
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     curl \
-    libgrpc++1.38 \
+    libgrpc++1 \
     libprotobuf23 \
     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
