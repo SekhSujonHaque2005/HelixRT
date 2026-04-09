@@ -10,7 +10,7 @@ import http from "http";
 const app = express();
 app.use(cors({
   origin: "*",
-  methods: ["GET", "POST", "OPTIONS"]
+  methods: ["GET", "POST", "DELETE", "OPTIONS"]
 }));
 app.use(express.json());
 const PORT = process.env.PORT || 4000;
