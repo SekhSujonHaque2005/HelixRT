@@ -5,6 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import express from "express";
 import cors from "cors";
+import http from "http";
 
 const app = express();
 app.use(cors({
@@ -12,7 +13,8 @@ app.use(cors({
   methods: ["GET", "POST", "OPTIONS"]
 }));
 app.use(express.json());
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
+const server = http.createServer(app);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -69,9 +71,9 @@ const runtimeClient = new helixrt.RuntimeService(
 
 /* ---------- WebSocket Server ---------- */
 
-const wss = new WebSocketServer({ port: 8080 });
+const wss = new WebSocketServer({ server });
 
-console.log("Gateway WebSocket server running on ws://localhost:8080");
+console.log(`Gateway WebSocket server attached to HTTP server on port ${PORT}`);
 
 wss.on("connection", (ws) => {
   console.log("Dashboard connected");
@@ -201,6 +203,6 @@ app.post("/runtime/scheduler", (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Metrics API running on http://localhost:${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Unified Gateway API & WebSocket running on port ${PORT}`);
 });
