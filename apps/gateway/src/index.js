@@ -131,6 +131,16 @@ stream.on("end", () => {
   console.log("Runtime stream ended");
 });
 
+app.delete("/metrics/history", async (req, res) => {
+  try {
+    await db.query("TRUNCATE TABLE metrics");
+    res.json({ success: true, message: "History cleared" });
+  } catch (err) {
+    console.error("History clear error:", err);
+    res.status(500).send("Database error");
+  }
+});
+
 app.get("/metrics/history", async (req, res) => {
   try {
     const result = await db.query(

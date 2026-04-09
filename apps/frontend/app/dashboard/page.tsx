@@ -55,7 +55,7 @@ export default function Dashboard() {
     const [alerts, setAlerts] = useState<string[]>([]);
     const [terminalLogs, setTerminalLogs] = useState<string[]>([
         "> HelixRT Monitoring System Initialized...",
-        "> Awaiting websocket connection at ws://localhost:8080..."
+        `> Awaiting websocket connection at ${process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8080"}...`
     ]);
     const terminalRef = useRef<HTMLDivElement>(null);
     const [isExporting, setIsExporting] = useState(false);
@@ -130,6 +130,17 @@ export default function Dashboard() {
         };
 
         fetchHistory();
+
+        const clearHistory = async () => {
+            try {
+                const gatewayUrl = process.env.NEXT_PUBLIC_GATEWAY_URL || "http://localhost:4000";
+                await fetch(`${gatewayUrl}/metrics/history`, { method: "DELETE" });
+                setData([]);
+                setTerminalLogs(prev => [...prev, "> History cleared successfully."]);
+            } catch (err) {
+                console.error("Failed to clear history:", err);
+            }
+        };
 
         const wsUrl = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:8080";
         const socket = new WebSocket(wsUrl);
@@ -245,6 +256,16 @@ export default function Dashboard() {
                                     onClick={() => fetch(`${gatewayUrl}/runtime/stop`, { method: "POST" })}
                                 >
                                     Stop Runtime
+                                </button>
+                                <button
+                                    className="px-6 py-2.5 bg-slate-100 dark:bg-slate-800/40 hover:bg-slate-200 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 rounded-xl font-medium transition-all shadow-sm"
+                                    onClick={async () => {
+                                        await fetch(`${gatewayUrl}/metrics/history`, { method: "DELETE" });
+                                        setData([]);
+                                        setTerminalLogs(prev => [...prev, "> History cleared successfully."]);
+                                    }}
+                                >
+                                    Clear History
                                 </button>
                             </div>
 
