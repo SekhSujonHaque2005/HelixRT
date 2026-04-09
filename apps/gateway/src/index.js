@@ -26,11 +26,13 @@ const PROTO_PATH = path.resolve(
 import { Client } from "pg";
 
 const db = new Client({
-  user: "postgres",
+  connectionString: process.env.DATABASE_URL,
+  user: process.env.PGUSER || "postgres",
   host: process.env.PGHOST || "localhost",
-  database: "helixrt",
-  password: "postgres",
-  port: 5432
+  database: process.env.PGDATABASE || "helixrt",
+  password: process.env.PGPASSWORD || "postgres",
+  port: process.env.PGPORT || 5432,
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
 const connectWithRetry = () => {
