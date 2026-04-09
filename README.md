@@ -86,7 +86,7 @@ There are two main ways to run this project: **Locally** and using **Docker**.
 To run the entire stack (Database, C++ Runtime, Node Gateway, Next.js Frontend) in one command:
 
 ```bash
-DOCKER_BUILDKIT=0 docker-compose up --build
+docker compose up --build
 ```
 *Note: The first time you run this, it will build the containers and initialize the PostgreSQL database automatically.*
 
@@ -96,7 +96,7 @@ DOCKER_BUILDKIT=0 docker-compose up --build
 
 To stop the servers and clean up:
 ```bash
-docker-compose down -v
+docker compose down -v
 ```
 
 ---
