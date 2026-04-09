@@ -158,22 +158,31 @@ You can deploy the entire HelixRT stack for free using **Neon**, **Render**, and
 3. Copy the **Connection String** (it starts with `postgresql://...`).
 4. In the Neon Console, go to **SQL Editor** and paste the contents of [init-db.sql](file:///home/sujon/projects/HelixRT/init-db.sql) to set up the schema.
 
-### Step 2: Backend (Render)
+### Step 2: Backend (Render Web Service)
 1. Sign up at [Render.com](https://render.com).
-2. Click **New** > **Blueprint**.
+2. Click **New** > **Web Service**.
 3. Connect your GitHub repository.
-4. Render will detect the `render.yaml` file and prepare to deploy:
-   - `helixrt-runtime` (C++ Engine)
-   - `helixrt-gateway` (Node.js API)
-5. During setup, Render will ask for the `DATABASE_URL` environment variable. Paste the connection string you copied from Neon.
-6. Once deployed, copy your Gateway's URL (e.g., `https://helixrt-gateway.onrender.com`).
+4. **Configure the Service**:
+   - **Name**: `helixrt-backend`
+   - **Repository Branch**: `master` (or your main branch)
+   - **Environment**: `Docker`
+   - **Dockerfile Path**: `Dockerfile.monolith` (This is the important part!)
+   - **Instance Type**: `Free`
+5. **Add Environment Variables**:
+   - Click **Advanced** and add:
+     - `DATABASE_URL`: Paste your Neon string.
+     - `PORT`: `4000`
+6. Click **Create Web Service**. 
+
+*Note: You likely won't be asked for a credit card for this single "Web Service" deployment.*
+Once deployed, copy your Gateway's URL (e.g., `https://helixrt-backend.onrender.com`).
 
 ### Step 3: Frontend (Vercel)
 1. Sign up at [Vercel.com](https://vercel.com).
 2. Click **Add New** > **Project** and import your GitHub repository.
 3. In the **Environment Variables** section, add:
-   - `NEXT_PUBLIC_GATEWAY_URL`: `https://your-gateway-url.onrender.com`
-   - `NEXT_PUBLIC_WS_URL`: `wss://your-gateway-url.onrender.com` (replace `https://` with `wss://`)
+   - `NEXT_PUBLIC_GATEWAY_URL`: `https://your-backend-url.onrender.com`
+   - `NEXT_PUBLIC_WS_URL`: `wss://your-backend-url.onrender.com` (replace `https://` with `wss://`)
 4. Click **Deploy**.
 
 **Congratulations! Your real-time observability platform is live!**

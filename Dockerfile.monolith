@@ -1,0 +1,51 @@
+# STAGE 1: Build the C++ Runtime
+FROM ubuntu:22.04 AS cpp-builder
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    build-essential \
+    cmake \
+    libgrpc++-dev \
+    libprotobuf-dev \
+    protobuf-compiler-grpc \
+    pkg-config
+
+WORKDIR /app
+COPY . .
+
+WORKDIR /app/apps/runtime
+RUN mkdir -p build && cd build && cmake .. && make
+
+# STAGE 2: Final Production Image
+FROM ubuntu:22.04
+
+# Install Node.js 18 and necessary runtime libs for C++ gRPC
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    curl \
+    libgrpc++1.38 \
+    libprotobuf23 \
+    && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy the compiled C++ binary
+COPY --from=cpp-builder /app/apps/runtime/build/runtime /app/runtime-binary
+
+# Copy the gateway and shared proto
+COPY apps/gateway /app/apps/gateway
+COPY packages/shared-proto /app/packages/shared-proto
+COPY package*.json ./
+
+# Install Node dependencies
+WORKDIR /app/apps/gateway
+RUN npm install --production
+
+# Add the startup script
+WORKDIR /app
+COPY start-production.sh ./
+RUN chmod +x start-production.sh
+
+EXPOSE 4000 8080
+
+CMD ["./start-production.sh"]
