@@ -33,6 +33,7 @@ export default function DocsPage() {
                             <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
                                 <li><a href="#docker" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Docker Compose</a></li>
                                 <li><a href="#env-vars" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Environment Variables</a></li>
+                                <li><a href="#cloud-deployment" className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">Cloud Deployment</a></li>
                             </ul>
                         </div>
                     </nav>
@@ -68,7 +69,7 @@ export default function DocsPage() {
                         </p>
                         <div className="bg-slate-900 rounded-lg p-4 font-mono text-sm text-slate-300 flex items-center gap-3">
                             <Terminal size={16} className="text-emerald-500 shrink-0" />
-                            <code>git clone https://github.com/helixrt/core.git<br />cd helixrt<br />docker-compose up --build</code>
+                            <code>git clone https://github.com/SekhSujonHaque2005/HelixRT.git<br />cd HelixRT<br />docker-compose up --build</code>
                         </div>
                         <div className="mt-4 text-slate-700 dark:text-slate-300">
                             This spins up the standard ecosystem:
@@ -203,6 +204,39 @@ export default function DocsPage() {
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </section>
+
+                    {/* Section: Cloud Deployment */}
+                    <section id="cloud-deployment" className="scroll-mt-24 mb-16">
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Cloud Deployment (Free Tier)</h2>
+                        <p className="leading-relaxed mb-6 text-slate-700 dark:text-slate-300">
+                            HelixRT is optimized for zero-cost cloud deployment using a "Monolith" architecture to bypass common free-tier limitations (like Render's multi-service credit card requirement).
+                        </p>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+                                <h4 className="font-bold text-blue-500 mb-1 italic">Neon</h4>
+                                <p className="text-xs text-slate-500">PostgreSQL storage with automatic scaling and Vercel integration.</p>
+                            </div>
+                            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+                                <h4 className="font-bold text-emerald-500 mb-1 italic">Render</h4>
+                                <p className="text-xs text-slate-500">Hosts the Monolith backend (C++ Engine + Gateway) via Docker.</p>
+                            </div>
+                            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4">
+                                <h4 className="font-bold text-pink-500 mb-1 italic">Vercel</h4>
+                                <p className="text-xs text-slate-500">High-performance Next.js dashboard hosting for the control plane.</p>
+                            </div>
+                        </div>
+
+                        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-3">The Monolith Strategy</h3>
+                        <p className="text-slate-700 dark:text-slate-300 mb-4">
+                            By bundling the C++ Engine and Node.js Gateway into a single container using <code>Dockerfile.monolith</code>, we eliminate the need for private networking or multiple web services.
+                        </p>
+                        <div className="bg-slate-100 dark:bg-slate-900/80 rounded-xl p-6 border-l-4 border-emerald-500">
+                            <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                                <strong>Tip:</strong> Ensure <code>NEXT_PUBLIC_WS_URL</code> uses the <code>wss://</code> protocol for secure cloud connections. Standard <code>ws://</code> will be blocked by browser security on Vercel.
+                            </p>
                         </div>
                     </section>
 
