@@ -2,8 +2,8 @@
 
 HelixRT is a high-performance distributed systems runtime observability project, simulating a conceptual operating system task scheduler. Built to demonstrate thread pooling, task stealing, multi-modal scheduling, and real-time remote telemetry.
 
-1. Instrumented the scheduler with gRPC/Protocol Buffers services and WebSocket streaming to publish live task-latency and throughput metrics, persisting telemetry in PostgreSQL (4 initial worker threads, autoscaling to 16).
-2. Visualized runtime health on a Next.js/TypeScript dashboard and containerized the 4-service stack with Docker Compose for one-command setup (no automated unit-test or CI configuration is currently present).
+1. Instrumented the scheduler with gRPC/Protocol Buffers services and WebSocket streaming to publish live task-latency and throughput metrics, persisting telemetry in PostgreSQL (benchmark: 4 peak concurrent tasks, 39 tasks/sec average throughput, 3,000 ms p95 reported latency).
+2. Visualized runtime health on a Next.js/TypeScript dashboard and containerized the 4-service stack with Docker Compose for one-command setup (benchmark completed 780 tasks in 20 seconds; no automated unit-test or CI configuration is currently present).
 
 ## Architecture Diagram
 
